@@ -348,7 +348,14 @@
   (rainbow-delimiters-mode t)
 
   (defalias 'yafolding-hide-element 'v-folding-hide-element)
-  (yafolding-mode t))
+  (yafolding-mode t)
+
+  (setq-local imenu-generic-expression
+    '(("TODO" ".*TODO:[ \t]*\\(.*\\)$" 1)
+       ("fn" "^[ \t]*fn[ \t]+(.*)[ \t]+\\(.*\\)[ \t]*(.*)" 1)
+       ("struct" "^[ \t]*struct[ \t]+\\([a-zA-Z0-9_]+\\)" 1)
+       ("import" "^[ \t]*import[ \t]+\\([a-zA-Z0-9_]+\\)" 1)))
+  (imenu-add-to-menubar "Index"))
 
 ;;;###autoload
 (add-to-list 'auto-mode-alist '("\\.v\\'" . v-mode))
