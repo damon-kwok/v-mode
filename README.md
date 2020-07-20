@@ -12,6 +12,7 @@ An Emacs major mode for the [V](https://vlang.io/) programming language.
 - [ ] `imenu`
 - [ ] Code folding
 - [ ] Code jump (using `ctags`)
+- [ ] REPL
 - [ ] Build command integration
 - [ ] Auto format on save
 - [ ] `Keywords` and `Methods name` autocomplete (using `company-mode`)
