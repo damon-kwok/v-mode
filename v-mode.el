@@ -278,8 +278,41 @@
         (skip-chars-forward "^}")
         (forward-char)))))
 
-(defalias 'v-parent-mode                ;
-  (if (fboundp 'prog-mode) 'prog-mode 'fundamental-mode))
+(defun v-project-root-p (PATH)
+  "Return `t' if directory `PATH' is the root of the V project."
+  (setq-local files '("make.bat" "Makefile" ;
+                      "Dockerfile" ".editorconfig" ".gitignore"))
+  (setq-local foundp nil)
+  (while (and files
+              (not foundp))
+    (let* ((filename (car files))
+           (filepath (concat (file-name-as-directory PATH) filename)))
+      (setq-local files (cdr files))
+      (setq-local foundp (file-exists-p filepath))))
+  foundp)
+
+(defun v-project-root
+    (&optional
+     PATH)
+  "Return the root of the V project."
+  (let* ((bufdir (if buffer-file-name   ;
+                     (file-name-directory buffer-file-name) default-directory))
+         (curdir (if PATH (file-name-as-directory PATH) bufdir))
+         (parent (file-name-directory (directory-file-name curdir))))
+    (if (or (not parent)
+            (string= parent curdir)
+            (string= parent "/")
+            (v-project-root-p curdir)) ;
+        curdir                            ;
+      (v-project-root parent))))
+
+(defun v-project-name ()
+  "Return V project name."
+  (file-name-base (directory-file-name (v-project-root))))
+
+(defun v-project-file-exists-p (FILENAME)
+  "Return t if file `FILENAME' exists"
+  (file-exists-p (concat (v-project-root) FILENAME)))
 
 (defun v-folding-hide-element (&optional RETRY)
   "Hide current element."
@@ -292,6 +325,46 @@
           (yafolding-go-parent-element)
           (yafolding-hide-element 1))
       (yafolding-hide-region beg end))))
+
+(defun v-build-tags ()
+  (interactive)
+  (let ((tags-buffer (get-buffer "TAGS"))
+        (tags-buffer2 (get-buffer (format "TAGS<%s>" (v-project-name)))))
+    (if tags-buffer
+        (kill-buffer tags-buffer))
+    (if tags-buffer2
+      (kill-buffer tags-buffer2)))
+  (let* ((ponyc-path (string-trim (shell-command-to-string "which v")))
+          (ponyc-executable (string-trim (shell-command-to-string (concat "readlink -f " ponyc-path))))
+          (packages-path (expand-file-name (concat (file-name-directory ponyc-executable) "vlib") ))
+          (ctags-params ;
+            (concat  "ctags --languages=-v --langdef=v --langmap=v:.v "
+              "--regex-v='/^[ \\t]*fn([ \\t]+(.+)[ \\t]+([a-zA-Z0-9_]+)/\\2/f,function/' "
+              "--regex-v='/^[ \\t]*struct[ \\t]+([a-zA-Z0-9_]+)/\\1/s,struct/' "
+              "-e -R . " packages-path)))
+    (if (file-exists-p packages-path)
+      (progn
+        (setq default-directory (v-project-root))
+        (shell-command ctags-params)
+        (v-load-tags)))))
+
+(defun v-load-tags (&optional BUILD)
+  "Visit tags table."
+  (interactive)
+  (let* ((tags-file (concat (v-project-root) "TAGS")))
+    (if (file-exists-p tags-file)
+      (progn
+        (visit-tags-table (concat (v-project-root) "TAGS")))
+      (if BUILD
+        (v-build-tags)))))
+
+(defun v-after-save-hook ()
+  (if (not (executable-find "ctags"))
+    (message "Could not locate executable '%s'" "ctags")
+    (v-build-tags)))
+
+(defalias 'v-parent-mode                ;
+  (if (fboundp 'prog-mode) 'prog-mode 'fundamental-mode))
 
 ;;;###autoload
 (define-derived-mode v-mode v-parent-mode

@@ -6,7 +6,7 @@
 
 An Emacs major mode for the [V](https://vlang.io/) programming language.
 
-## Screenshot
+- Screenshot
 
 ![screenshot](https://github.com/damon-kwok/v-mode/blob/master/screenshot.png)
 
@@ -19,13 +19,13 @@ An Emacs major mode for the [V](https://vlang.io/) programming language.
 - [x] Whitespace character dsiplay
 - [x] Fill column indicator
 - [x] Code folding
-- [ ] Workspaces
+- [x] Workspaces
 - [ ] REPL
 - [ ] `V` mode menu
 - [ ] Auto format on save
 - [ ] Build command integration
 - [ ] Go to definition (using `ctags`)
-- [ ] `Keywords` and `Methods name` autocomplete (using `company-mode`)
+- [x] `Keywords` and `Methods name` autocomplete (using `company-mode`)
 
 ## Installation
 
