@@ -20,12 +20,12 @@ An Emacs major mode for the [V](https://vlang.io/) programming language.
 - [x] Fill column indicator
 - [x] Code folding
 - [x] Workspaces
-- [ ] REPL
 - [x] `V` mode menu
-- [ ] Auto format on save
+- [x] Auto format on save
 - [x] Build command integration
+- [ ] REPL
 - [ ] Go to definition (using `ctags`)
-- [x] `Keywords` and `Methods name` autocomplete (using `company-mode`)
+- [ ] `Keywords` and `Methods name` autocomplete (using `company-mode`)
 
 ## Installation
 
@@ -47,8 +47,7 @@ it's too simple to need any).
 (define-key ponylang-mode-map (kbd "<f6>")  v-menu)
 ```
 
-### Using [use-package](https://github.com/jwiegley/use-package) and
-[straight.el](https://github.com/raxod502/straight.el)
+### Using [use-package](https://github.com/jwiegley/use-package) and [straight.el](https://github.com/raxod502/straight.el)
 
 ```elisp
 (use-package v-mode
