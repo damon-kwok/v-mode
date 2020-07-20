@@ -1,6 +1,6 @@
 [![GitHub license](https://img.shields.io/github/license/ponylang/ponyc?color=2f4f4f)](https://github.com/ponylang/ponyc/blob/master/LICENSE)
-[![MELPA](http://melpa.org/packages/ponylang-mode-badge.svg)](http://melpa.org/#/ponylang-mode)
-[![MELPA Stable](http://stable.melpa.org/packages/ponylang-mode-badge.svg)](http://stable.melpa.org/#/ponylang-mode)
+[![MELPA](http://melpa.org/packages/v-mode-badge.svg)](http://melpa.org/#/v-mode)
+[![MELPA Stable](http://stable.melpa.org/packages/v-mode-badge.svg)](http://stable.melpa.org/#/v-mode)
 
 # V Mode
 
