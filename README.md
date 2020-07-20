@@ -6,25 +6,26 @@
 
 An Emacs major mode for the [V](https://vlang.io/) programming language.
 
-# Features
+## Features
 - [X] Syntax highlighting (font-lock)
 - [X] Indentation
-- [ ] `imenu`
-- [ ] REPL
+- [x] `imenu`
 - [x] TODO highlighting
 - [x] Rainbow delimiters
 - [x] Whitespace character dsiplay
 - [x] Fill column indicator
 - [x] Code folding
 - [ ] Workspaces
+- [ ] REPL
+- [ ] `V` mode menu
 - [ ] Auto format on save
 - [ ] Build command integration
 - [ ] Go to definition (using `ctags`)
 - [ ] `Keywords` and `Methods name` autocomplete (using `company-mode`)
 
-# Installation
+## Installation
 
-## Using MELPA
+### Using MELPA
 This package can be obtain from
 [MELPA](http://melpa.org/#/v-mode) or
 [MELPA Stable](http://stable.melpa.org/#/v-mode). The `master`
@@ -40,7 +41,7 @@ it's too simple to need any).
 (require 'v-mode)
 ```
 
-## Using [use-package](https://github.com/jwiegley/use-package) and
+### Using [use-package](https://github.com/jwiegley/use-package) and
 [straight.el](https://github.com/raxod502/straight.el)
 
 ```elisp
