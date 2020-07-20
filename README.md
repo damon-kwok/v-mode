@@ -5,6 +5,7 @@
 # V Mode
 
 An Emacs major mode for the [V](https://vlang.io/) programming language.
+![screenshot](https://github.com/damon-kwok/v-mode/blob/master/screenshot.png)
 
 ## Features
 - [X] Syntax highlighting (font-lock)
