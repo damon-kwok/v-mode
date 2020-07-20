@@ -1,0 +1,20 @@
+[attr]vlang text eol=lf whitespace=tab-in-indent,trailing-space,tabwidth=4
+[attr]unix text eol=lf whitespace=tab-in-indent,trailing-space,tabwidth=2
+[attr]win  text eol=crlf whitespace=tab-in-indent,trailing-space,tabwidth=2
+
+*.v vlang
+
+*.c unix
+*.cc unix
+*.h unix
+*.yml unix
+*.sh unix
+*.bash unix
+*.el unix
+
+*.bat win
+
+.gitattributes export-ignore
+.gitignore export-ignore
+
+CHANGELOG.md merge=union
