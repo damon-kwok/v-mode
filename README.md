@@ -1,7 +1,6 @@
-
-[https://img.shields.io/github/license/damon-kwok/v-mode?logo=gnu&.svg](https://github.com/damon-kwok/v-mode/blob/master/COPYING)
-[file:https://melpa.org/packages/v-mode-badge.svg](https://melpa.org/#/v-mode)
-[file:https://stable.melpa.org/packages/v-mode-badge.svg](https://stable.melpa.org/#/v-mode)
+[![GitHub license](https://img.shields.io/github/license/ponylang/ponyc?color=2f4f4f)](https://github.com/ponylang/ponyc/blob/master/LICENSE)
+[![MELPA](http://melpa.org/packages/ponylang-mode-badge.svg)](http://melpa.org/#/ponylang-mode)
+[![MELPA Stable](http://stable.melpa.org/packages/ponylang-mode-badge.svg)](http://stable.melpa.org/#/ponylang-mode)
 
 # V Mode
 
@@ -35,7 +34,7 @@ it's too simple to need any).
 (require 'v-mode)
 ```
 
-## Using [use-package](https://github.com/jwiegley/use-package) and 
+## Using [use-package](https://github.com/jwiegley/use-package) and
 [straight.el](https://github.com/raxod502/straight.el)
 
 ```elisp
