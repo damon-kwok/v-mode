@@ -210,7 +210,7 @@
      (,v-operator-functions-regexp . font-lock-builtin-face)
 
      ;; macro
-     ("#\\(?:include\\|if\\|ifdef\\|else\\|elif\\|endif\\)" . 'font-lock-builtin-face)
+     ("#\\(?:include\\|flag\\)" . 'font-lock-builtin-face)
 
      ;; method definitions
      ("\\(?:fn\\)\s+\\($?[a-z_][A-Za-z0-9_]*\\)" 1 'font-lock-function-name-face)
