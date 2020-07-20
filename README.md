@@ -5,6 +5,9 @@
 # V Mode
 
 An Emacs major mode for the [V](https://vlang.io/) programming language.
+
+## Screenshot
+
 ![screenshot](https://github.com/damon-kwok/v-mode/blob/master/screenshot.png)
 
 ## Features
