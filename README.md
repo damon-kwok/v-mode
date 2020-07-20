@@ -1,4 +1,4 @@
-[![GitHub license](https://img.shields.io/github/license/ponylang/ponyc?color=2f4f4f)](https://github.com/ponylang/ponyc/blob/master/LICENSE)
+[![GitHub license](https://img.shields.io/github/license/damon-kwok/v-mode)](https://github.com/damon-kwok/v-mode/blob/master/LICENSE)
 [![MELPA](http://melpa.org/packages/v-mode-badge.svg)](http://melpa.org/#/v-mode)
 [![MELPA Stable](http://stable.melpa.org/packages/v-mode-badge.svg)](http://stable.melpa.org/#/v-mode)
 
