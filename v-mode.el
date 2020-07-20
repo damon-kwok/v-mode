@@ -122,7 +122,7 @@
 (defconst v-preprocessor-keywords
                                         ;
   '("module"  "import" "pub" "const"    ;
-     "go" "__global" "inline")
+     "go" "__global" "inline" "live")
   "V declaration keywords.")
 
 (defconst v-careful-keywords
