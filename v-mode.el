@@ -376,9 +376,47 @@
     ["Open an issue" (v-run-command "xdg-open https://github.com/vlang/v/issues") t]
     ["Tutorial" (v-run-command "xdg-open https://github.com/vlang/v/blob/master/doc/docs.md") t]
     ["Awesome-V" ("xdg-open https://github.com/vlang/awesome-v") t]
-    ["Videos" (v-run-command "xdg-open https://vimeo.com/search/sort:latest?q=pony-vug") t]
     ["Contribute" (v-run-command "xdg-open https://github.com/vlang/v/blob/master/CONTRIBUTING.md") t]
     ["Supporter" (v-run-command "xdg-open https://patreon.com/vlang") t])))
+
+(defun v-banner-default ()
+  "v banner."
+  "
+  __   __
+  \\ \\ / /
+   \\ V /
+    \\_/
+")
+
+(defhydra v-hydra-menu
+  (:color blue
+          :hint none)
+"
+%s(v-banner-default)
+  Project     |  _i_: Init      _u_: Update     _o_: v.mod
+              |  _b_: Build     _r_: Run
+  Community   |  _1_: News      _2_: Discord    _3_: OpenIssue
+              |  _4_: Tutorial  _5_: Awesome-V  _6_: Sponsors  _0_: Contribute
+  _q_: Quit"                            ;
+  ("b" v-project-build "Build")
+  ("r" v-project-run "Run")
+  ("o" v-project-open "Open v.mod")
+  ("i" v-project-init "v init")
+  ("u" v-project-update "v udate")
+  ("1" (v-run-command "xdg-open https://twitter.com/v_language") "News")
+  ("2" (v-run-command "xdg-open https://discord.gg/vlang") "Discord")
+  ("3" (v-run-command "xdg-open https://github.com/vlang/v/issues") "Open an issue")
+
+  ("4" (v-run-command "xdg-open https://github.com/vlang/v/blob/master/doc/docs.md") "Docs")
+  ("5" (v-run-command "xdg-open https://github.com/vlang/awesome-v") "Awesome-V")
+  ("6" (v-run-command "xdg-open https://patreon.com/vlang") "Supporter")
+  ("0" (v-run-command "xdg-open https://github.com/vlang/v/blob/master/CONTRIBUTING.md") "Contribute")
+  ("q" nil "Quit"))
+
+(defun v-menu ()
+  "Open v hydra menu."
+  (interactive)
+  (v-hydra-menu/body))
 
 (defun v-folding-hide-element
   (&optional
@@ -400,10 +438,10 @@
          (tags-buffer2 (get-buffer (format "TAGS<%s>" (v-project-name)))))
     (if tags-buffer (kill-buffer tags-buffer))
     (if tags-buffer2 (kill-buffer tags-buffer2)))
-  (let* ((ponyc-path (string-trim (shell-command-to-string "which v")))
-          (ponyc-executable (string-trim (shell-command-to-string (concat "readlink -f "
-                                                                    ponyc-path))))
-          (packages-path (expand-file-name (concat (file-name-directory ponyc-executable) "vlib") ))
+  (let* ((v-path (string-trim (shell-command-to-string "which v")))
+          (v-executable (string-trim (shell-command-to-string (concat "readlink -f "
+                                                                    v-path))))
+          (packages-path (expand-file-name (concat (file-name-directory v-executable) "vlib") ))
           (ctags-params                 ;
             (concat  "ctags --languages=-v --langdef=v --langmap=v:.v "
               "--regex-v='/^[ \\t]*fn([ \\t]+(.+)[ \\t]+([a-zA-Z0-9_]+)/\\2/f,function/' "
