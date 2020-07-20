@@ -464,12 +464,36 @@
       (if BUILD (v-build-tags)))))
 
 (defun v-after-save-hook ()
+  (v-format-buffer)
   (if (not (executable-find "ctags"))
     (message "Could not locate executable '%s'" "ctags")
     (v-build-tags)))
 
 (defalias 'v-parent-mode                ;
   (if (fboundp 'prog-mode) 'prog-mode 'fundamental-mode))
+
+;;;###autoload
+(defun v-format-buffer ()
+  "Format the current buffer using the v fmt."
+  (interactive)
+  (let ((fmt-buffer-name "*v-fmt*"))
+	;; If we have an old *zig-fmt* buffer, we want to kill
+	;; it and start a new one to show the new errors
+	(when (get-buffer fmt-buffer-name)
+	  (kill-buffer fmt-buffer-name))
+	(let ((fmt-buffer (get-buffer-create fmt-buffer-name)))
+	  (set-process-sentinel
+      (start-process "v-fmt"
+        fmt-buffer
+				"v"
+        "fmt"
+        (buffer-file-name))
+      (lambda (process _e)
+        (if (> (process-exit-status process) 0)
+          (progn
+            (switch-to-buffer-other-window fmt-buffer)
+            (compilation-mode))
+          (revert-buffer :ignore-auto :noconfirm)))))))
 
 ;;;###autoload
 (define-derived-mode v-mode v-parent-mode
@@ -529,7 +553,10 @@
                                           ("fn" "^[ \t]*fn[ \t]+(.*)[ \t]+\\(.*\\)[ \t]*(.*)" 1)
                                           ("struct" "^[ \t]*struct[ \t]+\\([a-zA-Z0-9_]+\\)" 1)
                                           ("import" "^[ \t]*import[ \t]+\\([a-zA-Z0-9_]+\\)" 1)))
-  (imenu-add-to-menubar "Index"))
+  (imenu-add-to-menubar "Index")
+  ;;
+  (add-hook 'after-save-hook 'v-after-save-hook nil t)
+  (v-load-tags))
 
 ;;;###autoload
 (add-to-list 'auto-mode-alist '("\\.v\\'" . v-mode))
