@@ -21,9 +21,9 @@ An Emacs major mode for the [V](https://vlang.io/) programming language.
 - [x] Code folding
 - [x] Workspaces
 - [ ] REPL
-- [ ] `V` mode menu
+- [x] `V` mode menu
 - [ ] Auto format on save
-- [ ] Build command integration
+- [x] Build command integration
 - [ ] Go to definition (using `ctags`)
 - [x] `Keywords` and `Methods name` autocomplete (using `company-mode`)
 
@@ -43,6 +43,8 @@ it's too simple to need any).
 
 ```elisp
 (require 'v-mode)
+(define-key ponylang-mode-map (kbd "M-z") v-menu)
+(define-key ponylang-mode-map (kbd "<f6>")  v-menu)
 ```
 
 ### Using [use-package](https://github.com/jwiegley/use-package) and
@@ -55,5 +57,9 @@ it's too simple to need any).
              :host github
              :repo "damon-kwok/v-mode"
              :files ("tokens" "v-mode.el"))
+  :config
+  :bind-keymap
+  ("M-z" . v-menu)
+  ("<f6>" . v-menu)
   :mode ("\\.v\\'" . v-mode))
 ```
