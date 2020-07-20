@@ -111,16 +111,16 @@
     map)
   "Keymap for V major mode")
 
-(defconst v-keywords
-  '("go" "in" "is" "or"                 ;
-     "if" "else" "for" "match")
+(defconst v-keywords '("go" "in" "is" "or" ;
+                        "if" "else" "for" "match")
   "V language keywords.")
 
 (defconst v-declaration-keywords        ;
   '("type" "interface" "struct" "enum" "fn")
   "V declaration keywords.")
 
-(defconst v-preprocessor-keywords       ;
+(defconst v-preprocessor-keywords
+                                        ;
   '("module"  "import" "pub" "const"    ;
      "go" "__global" "inline")
   "V declaration keywords.")
@@ -145,8 +145,7 @@
   '("false" "true" "none")
   "Common constants.")
 
-(defconst v-operator-functions
-  '()
+(defconst v-operator-functions '()
   "V language operators functions.")
 
 ;; create the regex string for each class of keywords
@@ -280,30 +279,30 @@
 
 (defun v-project-root-p (PATH)
   "Return `t' if directory `PATH' is the root of the V project."
-  (setq-local files '("make.bat" "Makefile" ;
-                      "Dockerfile" ".editorconfig" ".gitignore"))
+  (setq-local files '("v.mod" "make.bat" "Makefile" ;
+                       "Dockerfile" ".editorconfig" ".gitignore"))
   (setq-local foundp nil)
   (while (and files
-              (not foundp))
+           (not foundp))
     (let* ((filename (car files))
-           (filepath (concat (file-name-as-directory PATH) filename)))
+            (filepath (concat (file-name-as-directory PATH) filename)))
       (setq-local files (cdr files))
       (setq-local foundp (file-exists-p filepath))))
   foundp)
 
 (defun v-project-root
-    (&optional
-     PATH)
+  (&optional
+    PATH)
   "Return the root of the V project."
   (let* ((bufdir (if buffer-file-name   ;
-                     (file-name-directory buffer-file-name) default-directory))
-         (curdir (if PATH (file-name-as-directory PATH) bufdir))
-         (parent (file-name-directory (directory-file-name curdir))))
+                   (file-name-directory buffer-file-name) default-directory))
+          (curdir (if PATH (file-name-as-directory PATH) bufdir))
+          (parent (file-name-directory (directory-file-name curdir))))
     (if (or (not parent)
-            (string= parent curdir)
-            (string= parent "/")
-            (v-project-root-p curdir)) ;
-        curdir                            ;
+          (string= parent curdir)
+          (string= parent "/")
+          (v-project-root-p curdir))    ;
+      curdir                            ;
       (v-project-root parent))))
 
 (defun v-project-name ()
@@ -314,49 +313,117 @@
   "Return t if file `FILENAME' exists"
   (file-exists-p (concat (v-project-root) FILENAME)))
 
-(defun v-folding-hide-element (&optional RETRY)
+(defun v-run-command (COMMAND &optional PATH)
+  "Return `COMMAND' in the root of the V project."
+  (setq default-directory (if PATH PATH (v-project-root PATH)))
+  (compile COMMAND))
+
+(defun v-project-build ()
+  "Build project with v."
+  (interactive)
+  (if (v-project-file-exists-p "Makefile")
+    (v-run-command "make")
+    (v-run-command "v .")))
+
+(defun v-project-init ()
+  "Run corral `init' command."
+  (interactive)
+  (unless (v-project-file-exists-p "v.mod")
+    (v-run-command "v init")))
+
+(defun v-project-update ()
+  "Run corral `update' command."
+  (interactive)
+  (if (v-project-file-exists-p "v.mod")
+    (v-run-command "v update")))
+
+(defun v-project-open ()
+  "open `v.mod' file."
+  (interactive)
+  (if (v-project-file-exists-p "v.mod")
+    (find-file (concat (v-project-root) "v.mod"))))
+
+(defun v-buffer-dirname ()
+  "Return current buffer directory file name."
+  (directory-file-name (if buffer-file-name (file-name-directory buffer-file-name)
+                         default-directory)))
+
+(defun v-project-run ()
+  "Run project."
+  (interactive)
+  (let* ((bin1 (concat (v-project-root) "bin/" (v-project-name)))
+          (bin2 (concat (v-project-root) "/" (v-project-name)))
+          (bin3 (concat (v-buffer-dirname) "/" (v-project-name))))
+    (if (file-exists-p bin1)
+      (v-run-command bin1)
+      (if (file-exists-p bin2)
+        (v-run-command bin2)
+        (if (file-exists-p bin3)
+          (v-run-command bin3))))))
+
+(easy-menu-define v-mode-menu v-mode-map  ;
+  "Menu for V mode."                      ;
+  '("V"                                   ;
+     ["Build" v-project-build t]          ;
+     ["Run" v-project-run t]              ;
+     ["Init" v-project-init t]            ;
+     ["Open" v-project-open t]            ;
+     ["Update" v-project-update t]        ;
+  "---" ;
+  ("Community"                            ;
+    ["News" (v-run-command "xdg-open https://twitter.com/v_language") t]
+    ["Discord" (v-run-command "xdg-open https://discord.gg/vlang") t]
+    ["Open an issue" (v-run-command "xdg-open https://github.com/vlang/v/issues") t]
+    ["Tutorial" (v-run-command "xdg-open https://github.com/vlang/v/blob/master/doc/docs.md") t]
+    ["Awesome-V" ("xdg-open https://github.com/vlang/awesome-v") t]
+    ["Videos" (v-run-command "xdg-open https://vimeo.com/search/sort:latest?q=pony-vug") t]
+    ["Contribute" (v-run-command "xdg-open https://github.com/vlang/v/blob/master/CONTRIBUTING.md") t]
+    ["Supporter" (v-run-command "xdg-open https://patreon.com/vlang") t])))
+
+(defun v-folding-hide-element
+  (&optional
+    RETRY)
   "Hide current element."
   (interactive)
   (let* ((region (yafolding-get-element-region))
-         (beg (car region))
-         (end (cadr region)))
-    (if (and (eq RETRY nil) (= beg end))
-        (progn
-          (yafolding-go-parent-element)
-          (yafolding-hide-element 1))
+          (beg (car region))
+          (end (cadr region)))
+    (if (and (eq RETRY nil)
+          (= beg end))
+      (progn (yafolding-go-parent-element)
+        (yafolding-hide-element 1))
       (yafolding-hide-region beg end))))
 
 (defun v-build-tags ()
   (interactive)
   (let ((tags-buffer (get-buffer "TAGS"))
-        (tags-buffer2 (get-buffer (format "TAGS<%s>" (v-project-name)))))
-    (if tags-buffer
-        (kill-buffer tags-buffer))
-    (if tags-buffer2
-      (kill-buffer tags-buffer2)))
+         (tags-buffer2 (get-buffer (format "TAGS<%s>" (v-project-name)))))
+    (if tags-buffer (kill-buffer tags-buffer))
+    (if tags-buffer2 (kill-buffer tags-buffer2)))
   (let* ((ponyc-path (string-trim (shell-command-to-string "which v")))
-          (ponyc-executable (string-trim (shell-command-to-string (concat "readlink -f " ponyc-path))))
+          (ponyc-executable (string-trim (shell-command-to-string (concat "readlink -f "
+                                                                    ponyc-path))))
           (packages-path (expand-file-name (concat (file-name-directory ponyc-executable) "vlib") ))
-          (ctags-params ;
+          (ctags-params                 ;
             (concat  "ctags --languages=-v --langdef=v --langmap=v:.v "
               "--regex-v='/^[ \\t]*fn([ \\t]+(.+)[ \\t]+([a-zA-Z0-9_]+)/\\2/f,function/' "
-              "--regex-v='/^[ \\t]*struct[ \\t]+([a-zA-Z0-9_]+)/\\1/s,struct/' "
-              "-e -R . " packages-path)))
+              "--regex-v='/^[ \\t]*struct[ \\t]+([a-zA-Z0-9_]+)/\\1/s,struct/' " "-e -R . "
+              packages-path)))
     (if (file-exists-p packages-path)
       (progn
         (setq default-directory (v-project-root))
         (shell-command ctags-params)
         (v-load-tags)))))
 
-(defun v-load-tags (&optional BUILD)
+(defun v-load-tags
+  (&optional
+    BUILD)
   "Visit tags table."
   (interactive)
   (let* ((tags-file (concat (v-project-root) "TAGS")))
     (if (file-exists-p tags-file)
-      (progn
-        (visit-tags-table (concat (v-project-root) "TAGS")))
-      (if BUILD
-        (v-build-tags)))))
+      (progn (visit-tags-table (concat (v-project-root) "TAGS")))
+      (if BUILD (v-build-tags)))))
 
 (defun v-after-save-hook ()
   (if (not (executable-find "ctags"))
@@ -390,44 +457,40 @@
   (font-lock-fontify-buffer)
 
   ;; (setq-local syntax-propertize-function v-syntax-propertize-function)
-
   (setq-local indent-tabs-mode nil)
   (setq-local tab-width 4)
   (setq-local buffer-file-coding-system 'utf-8-unix)
   ;;
   (hl-todo-mode)
-  (setq-local hl-todo-keyword-faces
-    '(("TODO" . "green")
-       ("FIXME" . "yellow")
-       ("DEBUG" . "DarkCyan")
-       ("GOTCHA" . "red")
-       ("STUB" . "DarkGreen")))
+  (setq-local hl-todo-keyword-faces '(("TODO" . "green")
+                                       ("FIXME" . "yellow")
+                                       ("DEBUG" . "DarkCyan")
+                                       ("GOTCHA" . "red")
+                                       ("STUB" . "DarkGreen")))
   (whitespace-mode)
-  (setq-local whitespace-style
-    '(face spaces tabs newline space-mark tab-mark newline-mark trailing))
+  (setq-local whitespace-style '(face spaces tabs newline space-mark tab-mark newline-mark
+                                  trailing))
   ;; Make whitespace-mode and whitespace-newline-mode use “¶” for end of line char and “▷” for tab.
   (setq-local whitespace-display-mappings
     ;; all numbers are unicode codepoint in decimal. e.g. (insert-char 182 1)
-    '((space-mark 32 [183] [46]) ; SPACE 32 「 」, 183 MIDDLE DOT 「·」, 46 FULL STOP 「.」
-       (newline-mark 10 [182 10]) ; LINE FEED,
-       (tab-mark 9 [9655 9] [92 9])))
+    '((space-mark 32 [183]
+        [46])         ; SPACE 32 「 」, 183 MIDDLE DOT 「·」, 46 FULL STOP 「.」
+       (newline-mark 10 [182 10])       ; LINE FEED,
+       (tab-mark 9 [9655 9]
+         [92 9])))
 
   ;; (setq-local whitespace-style '(face trailing))
   (setq-local fci-rule-column 80)
   (setq-local fci-handle-truncate-lines nil)
   (setq-local fci-rule-width 1)
   (setq-local fci-rule-color "grey30")
-
   (rainbow-delimiters-mode t)
-
   (defalias 'yafolding-hide-element 'v-folding-hide-element)
   (yafolding-mode t)
-
-  (setq-local imenu-generic-expression
-    '(("TODO" ".*TODO:[ \t]*\\(.*\\)$" 1)
-       ("fn" "^[ \t]*fn[ \t]+(.*)[ \t]+\\(.*\\)[ \t]*(.*)" 1)
-       ("struct" "^[ \t]*struct[ \t]+\\([a-zA-Z0-9_]+\\)" 1)
-       ("import" "^[ \t]*import[ \t]+\\([a-zA-Z0-9_]+\\)" 1)))
+  (setq-local imenu-generic-expression '(("TODO" ".*TODO:[ \t]*\\(.*\\)$" 1)
+                                          ("fn" "^[ \t]*fn[ \t]+(.*)[ \t]+\\(.*\\)[ \t]*(.*)" 1)
+                                          ("struct" "^[ \t]*struct[ \t]+\\([a-zA-Z0-9_]+\\)" 1)
+                                          ("import" "^[ \t]*import[ \t]+\\([a-zA-Z0-9_]+\\)" 1)))
   (imenu-add-to-menubar "Index"))
 
 ;;;###autoload
