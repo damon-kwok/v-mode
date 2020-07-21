@@ -465,6 +465,7 @@
 
 (defun v-after-save-hook ()
   (shell-command (concat  "v -w fmt " (buffer-file-name)))
+  (revert-buffer :ignore-auto :noconfirm)
   (if (not (executable-find "ctags"))
     (message "Could not locate executable '%s'" "ctags")
     (v-build-tags)))
@@ -507,16 +508,15 @@
                                        ("GOTCHA" . "red")
                                        ("STUB" . "DarkGreen")))
   (whitespace-mode)
-  (setq-local whitespace-style '(face spaces tabs newline space-mark tab-mark newline-mark
-                                  trailing))
+  (setq-local whitespace-style ;;
+    '(face spaces tabs newline space-mark tab-mark newline-mark
+       trailing))
   ;; Make whitespace-mode and whitespace-newline-mode use “¶” for end of line char and “▷” for tab.
   (setq-local whitespace-display-mappings
     ;; all numbers are unicode codepoint in decimal. e.g. (insert-char 182 1)
-    '((space-mark 32 [183]
-        [46])         ; SPACE 32 「 」, 183 MIDDLE DOT 「·」, 46 FULL STOP 「.」
-       (newline-mark 10 [182 10])       ; LINE FEED,
-       (tab-mark 9 [9655 9]
-         [92 9])))
+    '((space-mark 32 [183] [46])  ; SPACE 32 「 」, 183 MIDDLE DOT 「·」, 46 FULL STOP 「.」
+       (newline-mark 10 [182 10]) ; LINE FEED,
+       (tab-mark 9 [9655 9] [92 9])))
 
   ;; (setq-local whitespace-style '(face trailing))
   (setq-local fci-rule-column 80)
@@ -526,10 +526,11 @@
   (rainbow-delimiters-mode t)
   (defalias 'yafolding-hide-element 'v-folding-hide-element)
   (yafolding-mode t)
-  (setq-local imenu-generic-expression '(("TODO" ".*TODO:[ \t]*\\(.*\\)$" 1)
-                                          ("fn" "^[ \t]*fn[ \t]+(.*)[ \t]+\\(.*\\)[ \t]*(.*)" 1)
-                                          ("struct" "^[ \t]*struct[ \t]+\\([a-zA-Z0-9_]+\\)" 1)
-                                          ("import" "^[ \t]*import[ \t]+\\([a-zA-Z0-9_]+\\)" 1)))
+  (setq-local imenu-generic-expression ;;
+    '(("TODO" ".*TODO:[ \t]*\\(.*\\)$" 1)
+       ("fn" "^[ \t]*fn[ \t]+(.*)[ \t]+\\(.*\\)[ \t]*(.*)" 1)
+       ("struct" "^[ \t]*struct[ \t]+\\([a-zA-Z0-9_]+\\)" 1)
+       ("import" "^[ \t]*import[ \t]+\\([a-zA-Z0-9_]+\\)" 1)))
   (imenu-add-to-menubar "Index")
   ;;
   (add-hook 'after-save-hook 'v-after-save-hook nil t)
