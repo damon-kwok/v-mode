@@ -43,9 +43,9 @@ it's too simple to need any).
 
 ```elisp
 (require 'v-mode)
-(define-key ponylang-mode-map (kbd "M-z") v-menu)
-(define-key ponylang-mode-map (kbd "<f6>")  v-menu)
-(define-key ponylang-mode-map (kbd "C-c C-f") v-format-buffer)
+(define-key ponylang-mode-map (kbd "M-z") 'v-menu)
+(define-key ponylang-mode-map (kbd "<f6>")  'v-menu)
+(define-key ponylang-mode-map (kbd "C-c C-f") 'v-format-buffer)
 ```
 
 ### Using [use-package](https://github.com/jwiegley/use-package) and [straight.el](https://github.com/raxod502/straight.el)
@@ -62,5 +62,5 @@ it's too simple to need any).
   ("M-z" . v-menu)
   ("<f6>" . v-menu)
   ("C-c C-f" . v-format-buffer)
-  :mode ("\\.v\\'" . v-mode))
+  :mode ("\\.v\\'" . 'v-mode))
 ```
