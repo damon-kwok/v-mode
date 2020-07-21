@@ -1,4 +1,3 @@
-;; -*- lexical-binding: t -*-
 ;;; v-mode.el --- A major mode for the V programming language
 ;;
 ;; Authors: Damon Kwok <damon-kwok@outlook.com>
@@ -26,8 +25,8 @@
 ;;
 ;;   M-x package-install v-mode
 ;;
-;; Or, copy v-mode.el to some location in your emacs load
-;; path. Then add "(require 'v-mode)" to your emacs initialization
+;; Or, copy v-mode.el to some location in your Emacs load
+;; path.  Then add "(require 'v-mode)" to your Emacs initialization
 ;; (.emacs, init.el, or something).
 ;;
 ;; Example config:
@@ -109,7 +108,7 @@
     (define-key map "\C-j" 'newline-and-indent)
     ;; (define-key map (kbd "<C-return>") 'yafolding-toggle-element) ;
     map)
-  "Keymap for V major mode")
+  "Keymap for V major mode.")
 
 (defconst v-keywords '("go" "in" "is" "or" ;
                         "if" "else" "for" "match")
@@ -123,7 +122,7 @@
                                         ;
   '("module"  "import" "pub" "const"    ;
      "go" "__global" "inline" "live")
-  "V declaration keywords.")
+  "V preprocessor keywords.")
 
 (defconst v-careful-keywords
   '("break" "continue" "return" "goto"  ;
@@ -251,7 +250,8 @@
 (defun v-beginning-of-defun
   (&optional
     count)
-  "Go to line on which current function starts."
+  "Go to line on which current function start.
+Optional argument COUNT."
   (interactive)
   (let ((orig-level (odin-paren-level)))
     (while (and (not (odin-line-is-defun))
@@ -278,7 +278,7 @@
         (forward-char)))))
 
 (defun v-project-root-p (PATH)
-  "Return `t' if directory `PATH' is the root of the V project."
+  "Return t if directory `PATH' is the root of the V project."
   (setq-local files '("v.mod" "make.bat" "Makefile" ;
                        "Dockerfile" ".editorconfig" ".gitignore"))
   (setq-local foundp nil)
@@ -293,7 +293,8 @@
 (defun v-project-root
   (&optional
     PATH)
-  "Return the root of the V project."
+  "Return the root of the V project.
+Optional argument PATH ."
   (let* ((bufdir (if buffer-file-name   ;
                    (file-name-directory buffer-file-name) default-directory))
           (curdir (if PATH (file-name-as-directory PATH) bufdir))
@@ -310,11 +311,12 @@
   (file-name-base (directory-file-name (v-project-root))))
 
 (defun v-project-file-exists-p (FILENAME)
-  "Return t if file `FILENAME' exists"
+  "Return t if file `FILENAME' exists."
   (file-exists-p (concat (v-project-root) FILENAME)))
 
 (defun v-run-command (COMMAND &optional PATH)
-  "Return `COMMAND' in the root of the V project."
+  "Return `COMMAND' in the root of the V project.
+Optional argument PATH ."
   (setq default-directory (if PATH PATH (v-project-root PATH)))
   (compile COMMAND))
 
@@ -338,7 +340,7 @@
     (v-run-command "v update")))
 
 (defun v-project-open ()
-  "open `v.mod' file."
+  "Open `v.mod' file."
   (interactive)
   (if (v-project-file-exists-p "v.mod")
     (find-file (concat (v-project-root) "v.mod"))))
@@ -381,7 +383,7 @@
        ["Supporter" (v-run-command "xdg-open https://patreon.com/vlang") t])))
 
 (defun v-banner-default ()
-  "v banner."
+  "V banner."
   "
   __   __
   \\ \\ / /
@@ -422,7 +424,8 @@
 (defun v-folding-hide-element
   (&optional
     RETRY)
-  "Hide current element."
+  "Hide current element.
+Optional argument RETRY ."
   (interactive)
   (let* ((region (yafolding-get-element-region))
           (beg (car region))
@@ -434,6 +437,7 @@
       (yafolding-hide-region beg end))))
 
 (defun v-build-tags ()
+  "Build tags for current project."
   (interactive)
   (let ((tags-buffer (get-buffer "TAGS"))
          (tags-buffer2 (get-buffer (format "TAGS<%s>" (v-project-name)))))
@@ -456,7 +460,8 @@
 (defun v-load-tags
   (&optional
     BUILD)
-  "Visit tags table."
+  "Visit tags table.
+Optional argument BUILD ."
   (interactive)
   (let* ((tags-file (concat (v-project-root) "TAGS")))
     (if (file-exists-p tags-file)
@@ -464,6 +469,7 @@
       (if BUILD (v-build-tags)))))
 
 (defun v-after-save-hook ()
+  "After save hook."
   (shell-command (concat  "v -w fmt " (buffer-file-name)))
   (revert-buffer :ignore-auto :noconfirm)
   (if (not (executable-find "ctags"))
@@ -502,11 +508,12 @@
   (setq-local buffer-file-coding-system 'utf-8-unix)
   ;;
   (hl-todo-mode)
-  (setq-local hl-todo-keyword-faces '(("TODO" . "green")
-                                       ("FIXME" . "yellow")
-                                       ("DEBUG" . "DarkCyan")
-                                       ("GOTCHA" . "red")
-                                       ("STUB" . "DarkGreen")))
+  (setq-local hl-todo-keyword-faces ;;
+    '(("TODO" . "green")
+       ("FIXME" . "yellow")
+       ("DEBUG" . "DarkCyan")
+       ("GOTCHA" . "red")
+       ("STUB" . "DarkGreen")))
   (whitespace-mode)
   (setq-local whitespace-style ;;
     '(face spaces tabs newline space-mark tab-mark newline-mark
@@ -523,9 +530,12 @@
   (setq-local fci-handle-truncate-lines nil)
   (setq-local fci-rule-width 1)
   (setq-local fci-rule-color "grey30")
+  ;;
   (rainbow-delimiters-mode t)
+  ;;
   (defalias 'yafolding-hide-element 'v-folding-hide-element)
   (yafolding-mode t)
+  ;;
   (setq-local imenu-generic-expression ;;
     '(("TODO" ".*TODO:[ \t]*\\(.*\\)$" 1)
        ("fn" "^[ \t]*fn[ \t]+(.*)[ \t]+\\(.*\\)[ \t]*(.*)" 1)
@@ -541,4 +551,5 @@
 
 ;;
 (provide 'v-mode)
-;; v-mode.el ends here
+
+;;; v-mode.el ends here
