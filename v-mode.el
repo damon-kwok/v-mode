@@ -361,23 +361,24 @@
         (if (file-exists-p bin3)
           (v-run-command bin3))))))
 
-(easy-menu-define v-mode-menu v-mode-map  ;
-  "Menu for V mode."                      ;
-  '("V"                                   ;
-     ["Build" v-project-build t]          ;
-     ["Run" v-project-run t]              ;
-     ["Init" v-project-init t]            ;
-     ["Open" v-project-open t]            ;
-     ["Update" v-project-update t]        ;
-  "---" ;
-  ("Community"                            ;
-    ["News" (v-run-command "xdg-open https://twitter.com/v_language") t]
-    ["Discord" (v-run-command "xdg-open https://discord.gg/vlang") t]
-    ["Open an issue" (v-run-command "xdg-open https://github.com/vlang/v/issues") t]
-    ["Tutorial" (v-run-command "xdg-open https://github.com/vlang/v/blob/master/doc/docs.md") t]
-    ["Awesome-V" ("xdg-open https://github.com/vlang/awesome-v") t]
-    ["Contribute" (v-run-command "xdg-open https://github.com/vlang/v/blob/master/CONTRIBUTING.md") t]
-    ["Supporter" (v-run-command "xdg-open https://patreon.com/vlang") t])))
+(easy-menu-define v-mode-menu v-mode-map ;
+  "Menu for V mode."                     ;
+  '("V"                                  ;
+     ["Build" v-project-build t]         ;
+     ["Run" v-project-run t]             ;
+     ["Init" v-project-init t]           ;
+     ["Open" v-project-open t]           ;
+     ["Update" v-project-update t]       ;
+     "---"                               ;
+     ("Community"                        ;
+       ["News" (v-run-command "xdg-open https://twitter.com/v_language") t]
+       ["Discord" (v-run-command "xdg-open https://discord.gg/vlang") t]
+       ["Open an issue" (v-run-command "xdg-open https://github.com/vlang/v/issues") t]
+       ["Tutorial" (v-run-command "xdg-open https://github.com/vlang/v/blob/master/doc/docs.md") t]
+       ["Awesome-V" ("xdg-open https://github.com/vlang/awesome-v") t]
+       ["Contribute" (v-run-command
+                       "xdg-open https://github.com/vlang/v/blob/master/CONTRIBUTING.md") t]
+       ["Supporter" (v-run-command "xdg-open https://patreon.com/vlang") t])))
 
 (defun v-banner-default ()
   "v banner."
@@ -390,8 +391,8 @@
 
 (defhydra v-hydra-menu
   (:color blue
-          :hint none)
-"
+    :hint none)
+  "
 %s(v-banner-default)
   Project     |  _i_: Init      _u_: Update     _o_: v.mod
               |  _b_: Build     _r_: Run
@@ -406,11 +407,11 @@
   ("1" (v-run-command "xdg-open https://twitter.com/v_language") "News")
   ("2" (v-run-command "xdg-open https://discord.gg/vlang") "Discord")
   ("3" (v-run-command "xdg-open https://github.com/vlang/v/issues") "Open an issue")
-
   ("4" (v-run-command "xdg-open https://github.com/vlang/v/blob/master/doc/docs.md") "Docs")
   ("5" (v-run-command "xdg-open https://github.com/vlang/awesome-v") "Awesome-V")
   ("6" (v-run-command "xdg-open https://patreon.com/vlang") "Supporter")
-  ("0" (v-run-command "xdg-open https://github.com/vlang/v/blob/master/CONTRIBUTING.md") "Contribute")
+  ("0" (v-run-command "xdg-open https://github.com/vlang/v/blob/master/CONTRIBUTING.md")
+    "Contribute")
   ("q" nil "Quit"))
 
 (defun v-menu ()
@@ -439,8 +440,7 @@
     (if tags-buffer (kill-buffer tags-buffer))
     (if tags-buffer2 (kill-buffer tags-buffer2)))
   (let* ((v-path (string-trim (shell-command-to-string "which v")))
-          (v-executable (string-trim (shell-command-to-string (concat "readlink -f "
-                                                                    v-path))))
+          (v-executable (string-trim (shell-command-to-string (concat "readlink -f " v-path))))
           (packages-path (expand-file-name (concat (file-name-directory v-executable) "vlib") ))
           (ctags-params                 ;
             (concat  "ctags --languages=-v --langdef=v --langmap=v:.v "
@@ -463,41 +463,14 @@
       (progn (visit-tags-table (concat (v-project-root) "TAGS")))
       (if BUILD (v-build-tags)))))
 
-(defun v-before-save-hook ()
-  (v-format-buffer))
-
 (defun v-after-save-hook ()
+  (shell-command (concat  "v -w fmt " (buffer-file-name)))
   (if (not (executable-find "ctags"))
     (message "Could not locate executable '%s'" "ctags")
     (v-build-tags)))
 
 (defalias 'v-parent-mode                ;
   (if (fboundp 'prog-mode) 'prog-mode 'fundamental-mode))
-
-;;;###autoload
-(defun v-format-buffer ()
-  "Format the current buffer using the v fmt."
-  (interactive)
-  (let ((fmt-buffer-name "*v-fmt*"))
-	;; If we have an old *v-fmt* buffer, we want to kill
-	;; it and start a new one to show the new errors
-	(when (get-buffer fmt-buffer-name)
-	  (kill-buffer fmt-buffer-name))
-    (setq old-file (buffer-file-name))
-	(let ((fmt-buffer (get-buffer-create fmt-buffer-name)))
-	  (set-process-sentinel
-      (start-process "v-fmt"
-        fmt-buffer
-				"v"
-        "fmt"
-        (buffer-file-name))
-      (lambda (process _e)
-        (if (> (process-exit-status process) 0)
-          (progn
-            (switch-to-buffer-other-window fmt-buffer)
-            (compilation-mode))
-          (progn
-            (revert-buffer :ignore-auto :noconfirm))))))))
 
 ;;;###autoload
 (define-derived-mode v-mode v-parent-mode
@@ -559,7 +532,6 @@
                                           ("import" "^[ \t]*import[ \t]+\\([a-zA-Z0-9_]+\\)" 1)))
   (imenu-add-to-menubar "Index")
   ;;
-  (add-hook 'before-save-hook 'v-before-save-hook nil t)
   (add-hook 'after-save-hook 'v-after-save-hook nil t)
   (v-load-tags))
 
