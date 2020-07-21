@@ -468,10 +468,15 @@ Optional argument BUILD ."
       (progn (visit-tags-table (concat (v-project-root) "TAGS")))
       (if BUILD (v-build-tags)))))
 
+(defun v-format-buffer ()
+  "Format the current buffer using the v fmt."
+  (interactive)
+  (shell-command (concat  "v -w fmt " (buffer-file-name)))
+  (revert-buffer :ignore-auto :noconfirm))
+
 (defun v-after-save-hook ()
   "After save hook."
-  (shell-command (concat  "v -w fmt " (buffer-file-name)))
-  (revert-buffer :ignore-auto :noconfirm)
+  (v-format-buffer)
   (if (not (executable-find "ctags"))
     (message "Could not locate executable '%s'" "ctags")
     (v-build-tags)))
