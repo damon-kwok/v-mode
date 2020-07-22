@@ -25,7 +25,7 @@ An Emacs major mode for the [V](https://vlang.io/) programming language.
 - [x] Compilation integration
 - [x] Code navigation (using `imenu`)
 - [x] Go to definition (using `ctags`)
-- [ ] Code completion (using `company-mode`)
+- [x] Code completion (using `company-mode`)
 - [ ] REPL
 
 ## Installation
