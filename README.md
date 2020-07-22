@@ -14,19 +14,19 @@ An Emacs major mode for the [V](https://vlang.io/) programming language.
 ## Features
 - [X] Syntax highlighting (font-lock)
 - [X] Indentation
-- [x] `imenu`
 - [x] TODO highlighting
 - [x] Rainbow delimiters
 - [x] Whitespace character dsiplay
 - [x] Fill column indicator
-- [x] Code folding
-- [x] Workspaces
 - [x] `V` mode menu
+- [x] Workspace support
 - [x] Auto format on save
-- [x] Build command integration
-- [ ] REPL
+- [x] Code folding
+- [x] Compilation integration
+- [x] Code navigation (using `imenu`)
 - [ ] Go to definition (using `ctags`)
-- [ ] `Keywords` and `Methods name` autocomplete (using `company-mode`)
+- [ ] Code completion (using `company-mode`)
+- [ ] REPL
 
 ## Installation
 
