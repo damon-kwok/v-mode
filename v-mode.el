@@ -117,17 +117,17 @@
   '("type" "interface" "struct" "enum" "fn")
   "V declaration keywords.")
 
-(defconst v-preprocessor-keywords '("module"  "import" "pub" "const" ;
-                                     "__global")
+(defconst v-preprocessor-keywords '("module" "pub" "const")
   "V preprocessor keywords.")
 
 (defconst v-careful-keywords
-  '("break" "continue" "return" "goto"  ;
+  '("import"                            ;
+     "break" "continue" "return" "goto" ;
      "defer" "panic" "error"            ;
      "in" "is" "or"                     ;
      "go" "inline" "live"               ;
      "as" "assert"  "unsafe" "mut"      ;
-     "C")
+     "__global" "C")
   "V language careful keywords.")
 
 (defconst v-builtin-keywords
@@ -184,6 +184,10 @@
      ;; careful
      (,v-careful-keywords-regexp . font-lock-warning-face)
 
+     ;; @ # $
+     ;; ("#\\(?:include\\|flag\\)" . 'font-lock-builtin-face)
+     ("[@#$][A-Za-z_]*[A-Z-a-z0-9_]*" . 'font-lock-warning-face)
+
      ;; declaration
      (,v-declaration-keywords-regexp . font-lock-keyword-face)
 
@@ -208,10 +212,6 @@
 
      ;; operator methods
      (,v-operator-functions-regexp . font-lock-builtin-face)
-
-     ;; @ # $
-     ;; ("#\\(?:include\\|flag\\)" . 'font-lock-builtin-face)
-     ("[@#$][A-Za-z_]*[A-Z-a-z0-9_]*" . 'font-lock-warning-face)
 
      ;; method definitions
      ("\\(?:fn\\)\s+\\($?[a-z_][A-Za-z0-9_]*\\)" 1 'font-lock-function-name-face)
@@ -240,7 +240,7 @@
      ("\\('[\\].'\\)" 1 'font-lock-constant-face)
 
      ;; numeric literals
-     ("[ \t/+-/*//=><([,;]\\([0-9]+[0-9a-zA-Z_]*\\)+" 1 'font-lock-constant-face)
+     ("\\([0-9]+[0-9a-zA-Z_]*\\)+" 1 'font-lock-constant-face)
 
      ;; variable references
      ("\\([a-z_]+[a-z0-9_']*\\)+" 1 'font-lock-variable-name-face))
