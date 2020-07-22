@@ -110,23 +110,24 @@
     map)
   "Keymap for V major mode.")
 
-(defconst v-keywords '("go" "in" "is" "or" ;
-                        "if" "else" "for" "match")
+(defconst v-keywords '("if" "else" "for" "match")
   "V language keywords.")
 
 (defconst v-declaration-keywords        ;
   '("type" "interface" "struct" "enum" "fn")
   "V declaration keywords.")
 
-(defconst v-preprocessor-keywords
-  '("module"  "import" "pub" "const"    ;
-     "go" "__global" "inline" "live")
+(defconst v-preprocessor-keywords '("module"  "import" "pub" "const" ;
+                                     "__global")
   "V preprocessor keywords.")
 
 (defconst v-careful-keywords
   '("break" "continue" "return" "goto"  ;
-     "defer" "panic"                    ;
-     "as" "assert"  "unsafe" "mut")
+     "defer" "panic" "error"            ;
+     "in" "is" "or"                     ;
+     "go" "inline" "live"               ;
+     "as" "assert"  "unsafe" "mut"      ;
+     "C")
   "V language careful keywords.")
 
 (defconst v-builtin-keywords
@@ -208,8 +209,9 @@
      ;; operator methods
      (,v-operator-functions-regexp . font-lock-builtin-face)
 
-     ;; macro
-     ("#\\(?:include\\|flag\\)" . 'font-lock-builtin-face)
+     ;; @ # $
+     ;; ("#\\(?:include\\|flag\\)" . 'font-lock-builtin-face)
+     ("[@#$][A-Za-z_]*[A-Z-a-z0-9_]*" . 'font-lock-warning-face)
 
      ;; method definitions
      ("\\(?:fn\\)\s+\\($?[a-z_][A-Za-z0-9_]*\\)" 1 'font-lock-function-name-face)
@@ -219,9 +221,6 @@
 
      ;; constants references
      (,v-constant-regexp . font-lock-constant-face)
-
-     ;; @
-     ("@[A-Za-z_]*[A-Z-a-z0-9_]*" . 'font-lock-builtin-face)
 
      ;; method references
      ("\\([a-z_]$?[a-z0-9_]?+\\)$?[ \t]?(+" 1 'font-lock-function-name-face)
@@ -473,7 +472,7 @@ Optional argument BUILD ."
 (defun v-format-buffer ()
   "Format the current buffer using the v fmt."
   (interactive)
-  (shell-command (concat  "v -w fmt " (buffer-file-name)))
+  (shell-command (concat  "v fmt -w " (buffer-file-name)))
   (revert-buffer
     :ignore-auto
     :noconfirm))
