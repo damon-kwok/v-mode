@@ -4,7 +4,7 @@
 ;; Version: 0.0.1
 ;; URL: https://github.com/damon-kwok/v-mode
 ;; Keywords: languages programming
-;; Package-Requires: ((dash "2.17.0") (hydra "0.15.0") (hl-todo "3.1.2") (yafolding "0.4.1") (yasnippet "0.14.0") (rainbow-delimiters "2.1.4") (fill-column-indicator "1.90"))
+;; Package-Requires: ((dash "2.17.0") (hydra "0.15.0") (hl-todo "3.1.2") (yafolding "0.4.1") (yasnippet "0.14.0") (company-ctags "0.0.4") (rainbow-delimiters "2.1.4") (fill-column-indicator "1.90"))
 ;;
 ;; This file is not part of GNU Emacs.
 ;;
@@ -68,8 +68,11 @@
 (require 'yafolding)
 (require 'yasnippet)
 (require 'whitespace)
+(require 'company-ctags)
 (require 'rainbow-delimiters)
 (require 'fill-column-indicator)
+
+(with-eval-after-load 'company (company-ctags-auto-setup))
 
 (defvar v-mode-hook nil)
 (defcustom v-indent-trigger-commands    ;
@@ -445,18 +448,19 @@ Optional argument RETRY ."
     (if tags-buffer2 (kill-buffer tags-buffer2)))
   (let* ((v-path (string-trim (shell-command-to-string "which v")))
           (v-executable (string-trim (shell-command-to-string (concat "readlink -f " v-path))))
-          (packages-path (expand-file-name (concat (file-name-directory v-executable) "vlib") ))
+          (packages-path (concat (file-name-directory v-executable) "vlib") )
           (ctags-params                 ;
             (concat  "ctags --languages=-v --langdef=v --langmap=v:.v "
-              "--regex-v='/^[ \\t]*fn[ \\t]+(.*)[ \\t]+(.*)/\\2/f,function/' "
-              "--regex-v='/^[ \\t]*struct[ \\t]+([a-zA-Z0-9_]+)/\\1/s,struct/' "
-              "--regex-v='/^[ \\t]*import[ \\t]+([a-zA-Z0-9_]+)/\\1/s,import/' " ;
+              "--regex-v=/^[ \\t]*fn[ \\t]+(.*)[ \\t]+(.*)/\\2/f,function/ "
+              "--regex-v=/^[ \\t]*struct[ \\t]+([a-zA-Z0-9_]+)/\\1/s,struct/ "
+              "--regex-v=/^[ \\t]*import[ \\t]+([a-zA-Z0-9_]+)/\\1/s,import/ " ;
               "-e -R . " packages-path)))
-    (message "vlib:%s" packages-path)
     (if (file-exists-p packages-path)
       (progn
         (setq default-directory (v-project-root))
-        (message "cmd:%s" (shell-command-to-string ctags-params))
+        (let (result (shell-command-to-string ctags-params))
+          (if (not (eq "" result))
+            (message "ctags:%s" result)))
         (v-load-tags)))))
 
 (defun v-load-tags
