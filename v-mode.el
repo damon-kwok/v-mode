@@ -119,7 +119,6 @@
   "V declaration keywords.")
 
 (defconst v-preprocessor-keywords
-                                        ;
   '("module"  "import" "pub" "const"    ;
      "go" "__global" "inline" "live")
   "V preprocessor keywords.")
@@ -137,7 +136,8 @@
      "rune"                                 ;
      "f32" "f64"                            ;
      "byteptr" "voidptr" "charptr" "size_t" ;
-     "any" "any_int" "any_float")
+     "any" "any_int" "any_float"            ;
+     "it")
   "V language keywords.")
 
 (defconst v-constants                   ;
@@ -448,13 +448,15 @@ Optional argument RETRY ."
           (packages-path (expand-file-name (concat (file-name-directory v-executable) "vlib") ))
           (ctags-params                 ;
             (concat  "ctags --languages=-v --langdef=v --langmap=v:.v "
-              "--regex-v='/^[ \\t]*fn([ \\t]+(.+)[ \\t]+([a-zA-Z0-9_]+)/\\2/f,function/' "
-              "--regex-v='/^[ \\t]*struct[ \\t]+([a-zA-Z0-9_]+)/\\1/s,struct/' " "-e -R . "
-              packages-path)))
+              "--regex-v='/^[ \\t]*fn[ \\t]+(.*)[ \\t]+(.*)/\\2/f,function/' "
+              "--regex-v='/^[ \\t]*struct[ \\t]+([a-zA-Z0-9_]+)/\\1/s,struct/' "
+              "--regex-v='/^[ \\t]*import[ \\t]+([a-zA-Z0-9_]+)/\\1/s,import/' " ;
+              "-e -R . " packages-path)))
+    (message "vlib:%s" packages-path)
     (if (file-exists-p packages-path)
       (progn
         (setq default-directory (v-project-root))
-        (shell-command ctags-params)
+        (message "cmd:%s" (shell-command-to-string ctags-params))
         (v-load-tags)))))
 
 (defun v-load-tags
@@ -472,7 +474,9 @@ Optional argument BUILD ."
   "Format the current buffer using the v fmt."
   (interactive)
   (shell-command (concat  "v -w fmt " (buffer-file-name)))
-  (revert-buffer :ignore-auto :noconfirm))
+  (revert-buffer
+    :ignore-auto
+    :noconfirm))
 
 (defun v-after-save-hook ()
   "After save hook."
@@ -499,15 +503,16 @@ Optional argument BUILD ."
   (setq-local beginning-of-defun-function 'v-beginning-of-defun)
   (setq-local end-of-defun-function 'v-end-of-defun)
   (setq-local indent-line-function 'js-indent-line)
-
+  ;;
   ;; (setq-local font-lock-defaults        ;
   ;; '(v-font-lock-keywords ;
   ;; nil nil nil nil         ;
   ;; (font-lock-syntactic-face-function . v-mode-syntactic-face-function)))
   (setq-local font-lock-defaults '(v-font-lock-keywords))
   (font-lock-fontify-buffer)
-
+  ;;
   ;; (setq-local syntax-propertize-function v-syntax-propertize-function)
+  ;;
   (setq-local indent-tabs-mode nil)
   (setq-local tab-width 4)
   (setq-local buffer-file-coding-system 'utf-8-unix)
@@ -521,14 +526,16 @@ Optional argument BUILD ."
        ("STUB" . "DarkGreen")))
   (whitespace-mode)
   (setq-local whitespace-style ;;
-    '(face spaces tabs newline space-mark tab-mark newline-mark
-       trailing))
-  ;; Make whitespace-mode and whitespace-newline-mode use “¶” for end of line char and “▷” for tab.
+    '(face spaces tabs newline space-mark tab-mark newline-mark trailing))
+  ;; Make whitespace-mode and whitespace-newline-mode
+  ;; use “¶” for end of line char and “▷” for tab.
   (setq-local whitespace-display-mappings
     ;; all numbers are unicode codepoint in decimal. e.g. (insert-char 182 1)
-    '((space-mark 32 [183] [46])  ; SPACE 32 「 」, 183 MIDDLE DOT 「·」, 46 FULL STOP 「.」
-       (newline-mark 10 [182 10]) ; LINE FEED,
-       (tab-mark 9 [9655 9] [92 9])))
+    '((space-mark 32 [183]
+        [46])         ; SPACE 32 「 」, 183 MIDDLE DOT 「·」, 46 FULL STOP 「.」
+       (newline-mark 10 [182 10])       ; LINE FEED,
+       (tab-mark 9 [9655 9]
+         [92 9])))
 
   ;; (setq-local whitespace-style '(face trailing))
   (setq-local fci-rule-column 80)
