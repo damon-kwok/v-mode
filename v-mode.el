@@ -210,6 +210,10 @@
      ;; delimiter: brackets
      ("\\(\\[\\|\\]\\|[(){}]\\)" 1 'font-lock-comment-delimiter-face)
 
+     ;; numeric literals
+     ;; ("[^A-Za-z_]\\([0-9][A-Za-z0-9_]*\\)" 1 'font-lock-constant-face)
+     ("[ \t/+-/*//=><([{,;&|%]\\([0-9][A-Za-z0-9_]*\\)" 1 'font-lock-constant-face)
+
      ;; operator methods
      (,v-operator-functions-regexp . font-lock-builtin-face)
 
@@ -239,11 +243,8 @@
      ;; character literals
      ("\\('[\\].'\\)" 1 'font-lock-constant-face)
 
-     ;; numeric literals
-     ("\\([0-9]+[0-9a-zA-Z_]*\\)+" 1 'font-lock-constant-face)
-
      ;; variable references
-     ("\\([a-z_]+[a-z0-9_']*\\)+" 1 'font-lock-variable-name-face))
+     ("\\($?_?[a-z]+[a-z_0-9]*\\)" 1 'font-lock-variable-name-face))
   "An alist mapping regexes to font-lock faces.")
 
 (defun v-beginning-of-defun
