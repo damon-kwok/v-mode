@@ -451,9 +451,9 @@ Optional argument RETRY ."
           (packages-path (concat (file-name-directory v-executable) "vlib") )
           (ctags-params                 ;
             (concat  "ctags --languages=-v --langdef=v --langmap=v:.v "
-              "--regex-v=/^[ \\t]*fn[ \\t]+(.*)[ \\t]+(.*)/\\2/f,function/ "
-              "--regex-v=/^[ \\t]*struct[ \\t]+([a-zA-Z0-9_]+)/\\1/s,struct/ "
-              "--regex-v=/^[ \\t]*import[ \\t]+([a-zA-Z0-9_]+)/\\1/s,import/ " ;
+              "--regex-v=/[ \\t]*fn[ \\t]+(.*)[ \\t]+(.*)/\\2/f,function/ "
+              "--regex-v=/[ \\t]*struct[ \\t]+([a-zA-Z0-9_]+)/\\1/s,struct/ " ;
+              "--regex-v=/[ \\t]*module[ \\t]+([a-zA-Z0-9_]+)/\\1/m,module/ " ;
               "-e -R . " packages-path)))
     (if (file-exists-p packages-path)
       (progn
