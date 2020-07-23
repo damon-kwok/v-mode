@@ -452,7 +452,10 @@ Optional argument RETRY ."
           (ctags-params                 ;
             (concat  "ctags --languages=-v --langdef=v --langmap=v:.v "
               "--regex-v=/[ \\t]*fn[ \\t]+(.*)[ \\t]+(.*)/\\2/f,function/ "
-              "--regex-v=/[ \\t]*struct[ \\t]+([a-zA-Z0-9_]+)/\\1/s,struct/ " ;
+              "--regex-v=/[ \\t]*struct[ \\t]+([a-zA-Z0-9_]+)/\\1/s,struct/ "
+              "--regex-v=/[ \\t]*interface[ \\t]+([a-zA-Z0-9_]+)/\\1/i,interface/ "
+              "--regex-v=/[ \\t]*type[ \\t]+([a-zA-Z0-9_]+)/\\1/t,type/ "
+              "--regex-v=/[ \\t]*enum[ \\t]+([a-zA-Z0-9_]+)/\\1/e,enum/ "
               "--regex-v=/[ \\t]*module[ \\t]+([a-zA-Z0-9_]+)/\\1/m,module/ " ;
               "-e -R . " packages-path)))
     (if (file-exists-p packages-path)
@@ -554,9 +557,12 @@ Optional argument BUILD ."
   ;;
   (setq-local imenu-generic-expression ;;
     '(("TODO" ".*TODO:[ \t]*\\(.*\\)$" 1)
-       ("fn" "^[ \t]*fn[ \t]+(.*)[ \t]+\\(.*\\)[ \t]*(.*)" 1)
-       ("struct" "^[ \t]*struct[ \t]+\\([a-zA-Z0-9_]+\\)" 1)
-       ("import" "^[ \t]*import[ \t]+\\([a-zA-Z0-9_]+\\)" 1)))
+       ("fn" "[ \t]*fn[ \t]+(.*)[ \t]+\\(.*\\)[ \t]*(.*)" 1)
+       ("struct" "[ \t]*struct[ \t]+\\([a-zA-Z0-9_]+\\)" 1)
+       ("interface" "[ \t]*interface[ \t]+\\([a-zA-Z0-9_]+\\)" 1)
+       ("type" "[ \t]*type[ \t]+\\([a-zA-Z0-9_]+\\)" 1)
+       ("enum" "[ \t]*enum[ \t]+\\([a-zA-Z0-9_]+\\)" 1)
+       ("import" "[ \t]*import[ \t]+\\([a-zA-Z0-9_]+\\)" 1)))
   (imenu-add-to-menubar "Index")
   ;;
   (add-hook 'after-save-hook 'v-after-save-hook nil t)
