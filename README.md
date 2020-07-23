@@ -1,6 +1,6 @@
 [![GitHub license](https://img.shields.io/github/license/damon-kwok/v-mode)](https://github.com/damon-kwok/v-mode/blob/master/COPYING)
-[![MELPA](http://melpa.org/packages/v-mode-badge.svg)](http://melpa.org/#/v-mode)
-[![MELPA Stable](http://stable.melpa.org/packages/v-mode-badge.svg)](http://stable.melpa.org/#/v-mode)
+<!-- [![MELPA](http://melpa.org/packages/v-mode-badge.svg)](http://melpa.org/#/v-mode) -->
+<!-- [![MELPA Stable](http://stable.melpa.org/packages/v-mode-badge.svg)](http://stable.melpa.org/#/v-mode) -->
 [![Sponsor](https://img.shields.io/badge/Support%20Me-%F0%9F%92%97-ff69b4.svg)](https://www.patreon.com/DamonKwok)
 
 # V Mode
@@ -31,7 +31,7 @@ An Emacs major mode for the [V](https://vlang.io/) programming language.
 
 ## Installation
 
-### Using MELPA (!!![COMING SOON](https://github.com/melpa/melpa/pull/7031)!!!)
+### Using MELPA ([COMING SOON](https://github.com/melpa/melpa/pull/7031))
 ~~This package can be obtain from
 [MELPA](http://melpa.org/#/v-mode) or
 [MELPA Stable](http://stable.melpa.org/#/v-mode). The `master`
