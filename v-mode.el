@@ -73,6 +73,7 @@
 (require 'fill-column-indicator)
 
 (defvar v-mode-hook nil)
+
 (defcustom v-indent-trigger-commands    ;
   '(indent-for-tab-command yas-expand yas/expand)
   "Commands that might trigger a `v-indent-line' call."
@@ -247,36 +248,6 @@
      ;; variable references
      ("\\($?_?[a-z]+[a-z_0-9]*\\)" 1 'font-lock-variable-name-face))
   "An alist mapping regexes to font-lock faces.")
-
-(defun v-beginning-of-defun
-  (&optional
-    count)
-  "Go to line on which current function start.
-Optional argument COUNT."
-  (interactive)
-  (let ((orig-level (odin-paren-level)))
-    (while (and (not (odin-line-is-defun))
-             (not (bobp))
-             (> orig-level 0))
-      (setq orig-level (odin-paren-level))
-      (while (>= (odin-paren-level) orig-level)
-        (skip-chars-backward "^{")
-        (backward-char))))
-  (if (odin-line-is-defun)
-    (beginning-of-line)))
-
-(defun v-end-of-defun ()
-  "Go to line on which current function ends."
-  (interactive)
-  (let ((orig-level (odin-paren-level)))
-    (when (> orig-level 0)
-      (odin-beginning-of-defun)
-      (end-of-line)
-      (setq orig-level (odin-paren-level))
-      (skip-chars-forward "^}")
-      (while (>= (odin-paren-level) orig-level)
-        (skip-chars-forward "^}")
-        (forward-char)))))
 
 (defun v-project-root-p (PATH)
   "Return t if directory `PATH' is the root of the V project."
@@ -505,8 +476,6 @@ Optional argument BUILD ."
   (setq-local comment-start "*/")
   (setq-local comment-start-skip "\\(//+\\|/\\*+\\)\\s *")
   (setq-local electric-indent-chars (append "{}():;," electric-indent-chars))
-  (setq-local beginning-of-defun-function 'v-beginning-of-defun)
-  (setq-local end-of-defun-function 'v-end-of-defun)
   (setq-local indent-line-function 'js-indent-line)
   ;;
   ;; (setq-local font-lock-defaults        ;
@@ -514,7 +483,7 @@ Optional argument BUILD ."
   ;; nil nil nil nil         ;
   ;; (font-lock-syntactic-face-function . v-mode-syntactic-face-function)))
   (setq-local font-lock-defaults '(v-font-lock-keywords))
-  (font-lock-fontify-buffer)
+  (font-lock-ensure)
   ;;
   ;; (setq-local syntax-propertize-function v-syntax-propertize-function)
   ;;
@@ -564,9 +533,7 @@ Optional argument BUILD ."
   (imenu-add-to-menubar "Index")
   ;;
   (add-hook 'after-save-hook 'v-after-save-hook nil t)
-  (v-load-tags)
-
-  (with-eval-after-load 'company (company-ctags-auto-setup)))
+  (v-load-tags))
 
 ;;;###autoload
 (add-to-list 'auto-mode-alist '("\\.v\\'" . v-mode))
