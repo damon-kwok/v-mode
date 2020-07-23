@@ -4,7 +4,7 @@
 ;; Version: 0.0.1
 ;; URL: https://github.com/damon-kwok/v-mode
 ;; Keywords: languages programming
-;; Package-Requires: ((dash "2.17.0") (hydra "0.15.0") (hl-todo "3.1.2") (yafolding "0.4.1") (yasnippet "0.14.0") (company-ctags "0.0.4") (rainbow-delimiters "2.1.4") (fill-column-indicator "1.90"))
+;; Package-Requires: ((emacs "25.1") (dash "2.17.0") (hydra "0.15.0") (hl-todo "3.1.2") (yafolding "0.4.1") (yasnippet "0.14.0") (company-ctags "0.0.4") (rainbow-delimiters "2.1.4") (fill-column-indicator "1.90"))
 ;;
 ;; This file is not part of GNU Emacs.
 ;;
@@ -57,7 +57,7 @@
 
 ;;; Code:
 
-(require 'cl)
+(require 'cl-lib)
 (require 'js)
 (require 'dash)
 (require 'xref)
@@ -71,8 +71,6 @@
 (require 'company-ctags)
 (require 'rainbow-delimiters)
 (require 'fill-column-indicator)
-
-(with-eval-after-load 'company (company-ctags-auto-setup))
 
 (defvar v-mode-hook nil)
 (defcustom v-indent-trigger-commands    ;
@@ -497,7 +495,7 @@ Optional argument BUILD ."
 
 ;;;###autoload
 (define-derived-mode v-mode v-parent-mode
-  "V"
+  "v"
   "Major mode for editing V files."
   :syntax-table v-mode-syntax-table
   (setq bidi-paragraph-direction 'left-to-right)
@@ -566,7 +564,9 @@ Optional argument BUILD ."
   (imenu-add-to-menubar "Index")
   ;;
   (add-hook 'after-save-hook 'v-after-save-hook nil t)
-  (v-load-tags))
+  (v-load-tags)
+
+  (with-eval-after-load 'company (company-ctags-auto-setup)))
 
 ;;;###autoload
 (add-to-list 'auto-mode-alist '("\\.v\\'" . v-mode))
