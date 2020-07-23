@@ -466,7 +466,7 @@ Optional argument BUILD ."
 
 ;;;###autoload
 (define-derived-mode v-mode v-parent-mode
-  "v"
+  "V"
   "Major mode for editing V files."
   :syntax-table v-mode-syntax-table
   (setq bidi-paragraph-direction 'left-to-right)
