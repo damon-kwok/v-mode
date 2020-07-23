@@ -405,7 +405,7 @@ Optional argument RETRY ."
     (if (and (eq RETRY nil)
           (= beg end))
       (progn (yafolding-go-parent-element)
-        (yafolding-hide-element 1))
+        (v-folding-hide-element t))
       (yafolding-hide-region beg end))))
 
 (defun v-build-tags ()
@@ -519,7 +519,7 @@ Optional argument BUILD ."
   ;;
   (rainbow-delimiters-mode t)
   ;;
-  (defalias 'yafolding-hide-element 'v-folding-hide-element)
+  ;; (defalias 'yafolding-hide-element 'v-folding-hide-element)
   (yafolding-mode t)
   ;;
   (setq-local imenu-generic-expression ;;
