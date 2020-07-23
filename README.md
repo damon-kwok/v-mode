@@ -12,6 +12,7 @@ An Emacs major mode for the [V](https://vlang.io/) programming language.
 ![screenshot](https://github.com/damon-kwok/v-mode/blob/master/screenshot.png)
 
 ## Features
+
 - [X] Syntax highlighting (font-lock)
 - [X] Indentation
 - [x] TODO highlighting
@@ -30,12 +31,12 @@ An Emacs major mode for the [V](https://vlang.io/) programming language.
 
 ## Installation
 
-### Using MELPA
-This package can be obtain from
+### Using MELPA (!!![COMING SOON](https://github.com/melpa/melpa/pull/7031)!!!)
+~~This package can be obtain from
 [MELPA](http://melpa.org/#/v-mode) or
 [MELPA Stable](http://stable.melpa.org/#/v-mode). The `master`
 branch is continuously deployed to `MELPA`, and released versions are
-deployed to `MELPA Stable`.
+deployed to `MELPA Stable`.~~
 
 <kbd>M-x package-install [RET] v-mode [RET]</kbd>
 
