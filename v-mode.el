@@ -447,19 +447,21 @@ Optional argument BUILD ."
       (if BUILD (v-build-tags)))))
 
 (defun v-format-buffer ()
-  "Format the current buffer using the v fmt."
+  "Format the current buffer using the 'v fmt -w'."
   (interactive)
-  (shell-command (concat  "v fmt -w " (buffer-file-name)))
-  (revert-buffer
-    :ignore-auto
-    :noconfirm))
+  (when (eq major-mode 'v-mode)
+    (shell-command (concat  "v fmt -w " (buffer-file-name)))
+    (revert-buffer
+      :ignore-auto
+      :noconfirm)))
 
 (defun v-after-save-hook ()
   "After save hook."
-  (v-format-buffer)
-  (if (not (executable-find "ctags"))
-    (message "Could not locate executable '%s'" "ctags")
-    (v-build-tags)))
+  (when (eq major-mode 'v-mode)
+    (v-format-buffer)
+    (if (not (executable-find "ctags"))
+      (message "Could not locate executable '%s'" "ctags")
+      (v-build-tags))))
 
 (defalias 'v-parent-mode                ;
   (if (fboundp 'prog-mode) 'prog-mode 'fundamental-mode))
