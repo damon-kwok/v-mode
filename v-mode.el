@@ -4,7 +4,7 @@
 ;; Version: 0.0.1
 ;; URL: https://github.com/damon-kwok/v-mode
 ;; Keywords: languages programming
-;; Package-Requires: ((emacs "25.1") (dash "2.17.0") (hydra "0.15.0") (hl-todo "3.1.2") (yafolding "0.4.1") (yasnippet "0.14.0") (company-ctags "0.0.4") (rainbow-delimiters "2.1.4") (fill-column-indicator "1.90"))
+;; Package-Requires: ((emacs "25.1") (dash "2.17.0") (hydra "0.15.0") (yasnippet "0.14.0"))
 ;;
 ;; This file is not part of GNU Emacs.
 ;;
@@ -64,14 +64,9 @@
 (require 'xref)
 (require 'hydra)
 (require 'imenu)
-(require 'hl-todo)
 (require 'easymenu)
-(require 'yafolding)
 (require 'yasnippet)
 (require 'whitespace)
-(require 'company-ctags)
-(require 'rainbow-delimiters)
-(require 'fill-column-indicator)
 
 (defvar v-mode-hook nil)
 
@@ -491,36 +486,16 @@ Optional argument BUILD ."
   (setq-local tab-width 4)
   (setq-local buffer-file-coding-system 'utf-8-unix)
   ;;
-  (hl-todo-mode)
-  (setq-local hl-todo-keyword-faces ;;
-    '(("TODO" . "green")
-       ("FIXME" . "yellow")
-       ("DEBUG" . "DarkCyan")
-       ("GOTCHA" . "red")
-       ("STUB" . "DarkGreen")))
   (whitespace-mode)
   (setq-local whitespace-style ;;
     '(face spaces tabs newline space-mark tab-mark newline-mark trailing))
   ;; Make whitespace-mode and whitespace-newline-mode
-  ;; use “¶” for end of line char and “▷” for tab.
+  ;; use "¶" for end of line char and "▷" for tab.
   (setq-local whitespace-display-mappings
     ;; all numbers are unicode codepoint in decimal. e.g. (insert-char 182 1)
-    '((space-mark 32 [183]
-        [46])         ; SPACE 32 「 」, 183 MIDDLE DOT 「·」, 46 FULL STOP 「.」
-       (newline-mark 10 [182 10])       ; LINE FEED,
-       (tab-mark 9 [9655 9]
-         [92 9])))
-
-  ;; (setq-local whitespace-style '(face trailing))
-  (setq-local fci-rule-column 80)
-  (setq-local fci-handle-truncate-lines nil)
-  (setq-local fci-rule-width 1)
-  (setq-local fci-rule-color "grey30")
-  ;;
-  (rainbow-delimiters-mode t)
-  ;;
-  ;; (defalias 'yafolding-hide-element 'v-folding-hide-element)
-  (yafolding-mode t)
+    '((space-mark 32 [183] [46])  ;; SPACE 32 「 」, 183 MIDDLE DOT 「·」, 46 FULL STOP 「.」
+       (newline-mark 10 [182 10]) ;; LINE FEED,
+       (tab-mark 9 [9655 9] [92 9])))
   ;;
   (setq-local imenu-generic-expression ;;
     '(("TODO" ".*TODO:[ \t]*\\(.*\\)$" 1)
