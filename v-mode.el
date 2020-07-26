@@ -66,7 +66,6 @@
 (require 'imenu)
 (require 'easymenu)
 (require 'yasnippet)
-(require 'whitespace)
 
 (defvar v-mode-hook nil)
 
@@ -485,17 +484,6 @@ Optional argument BUILD ."
   (setq-local indent-tabs-mode nil)
   (setq-local tab-width 4)
   (setq-local buffer-file-coding-system 'utf-8-unix)
-  ;;
-  (whitespace-mode)
-  (setq-local whitespace-style ;;
-    '(face spaces tabs newline space-mark tab-mark newline-mark trailing))
-  ;; Make whitespace-mode and whitespace-newline-mode
-  ;; use "¶" for end of line char and "▷" for tab.
-  (setq-local whitespace-display-mappings
-    ;; all numbers are unicode codepoint in decimal. e.g. (insert-char 182 1)
-    '((space-mark 32 [183] [46])  ;; SPACE 32 「 」, 183 MIDDLE DOT 「·」, 46 FULL STOP 「.」
-       (newline-mark 10 [182 10]) ;; LINE FEED,
-       (tab-mark 9 [9655 9] [92 9])))
   ;;
   (setq-local imenu-generic-expression ;;
     '(("TODO" ".*TODO:[ \t]*\\(.*\\)$" 1)
