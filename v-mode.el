@@ -1,4 +1,4 @@
-;;; v-mode.el --- A major mode for the V programming language
+;;; v-mode.el --- A major mode for the V programming language  -*- lexical-binding: t; -*-
 ;;
 ;; Authors: Damon Kwok <damon-kwok@outlook.com>
 ;; Version: 0.0.1
@@ -58,6 +58,7 @@
 ;;; Code:
 
 (require 'cl-lib)
+(require 'subr-x)
 (require 'js)
 (require 'dash)
 (require 'xref)
@@ -249,7 +250,7 @@
      ("\\($?_?[a-z]+[a-z_0-9]*\\)" 1 'font-lock-variable-name-face))
   "An alist mapping regexes to font-lock faces.")
 
-(defun v-project-root-p (PATH)
+(defun v-project-root-p (path)
   "Return t if directory `PATH' is the root of the V project."
   (let* ((files '("v.mod" "make.bat" "Makefile" ;
                    "Dockerfile" ".editorconfig" ".gitignore"))
@@ -257,19 +258,19 @@
     (while (and (> (length files) 0)
              (not foundp))
       (let* ((filename (car files))
-              (filepath (concat (file-name-as-directory PATH) filename)))
+              (filepath (concat (file-name-as-directory path) filename)))
         (setq files (cdr files))
         (setq foundp (file-exists-p filepath)))) ;
     foundp))
 
 (defun v-project-root
   (&optional
-    PATH)
+    path)
   "Return the root of the V project.
 Optional argument PATH ."
   (let* ((bufdir (if buffer-file-name   ;
                    (file-name-directory buffer-file-name) default-directory))
-          (curdir (if PATH (file-name-as-directory PATH) bufdir))
+          (curdir (if path (file-name-as-directory path) bufdir))
           (parent (file-name-directory (directory-file-name curdir))))
     (if (or (not parent)
           (string= parent curdir)
@@ -282,15 +283,15 @@ Optional argument PATH ."
   "Return V project name."
   (file-name-base (directory-file-name (v-project-root))))
 
-(defun v-project-file-exists-p (FILENAME)
+(defun v-project-file-exists-p (filename)
   "Return t if file `FILENAME' exists."
-  (file-exists-p (concat (v-project-root) FILENAME)))
+  (file-exists-p (concat (v-project-root) filename)))
 
-(defun v-run-command (COMMAND &optional PATH)
+(defun v-run-command (command &optional Path)
   "Return `COMMAND' in the root of the V project.
 Optional argument PATH ."
-  (setq default-directory (if PATH PATH (v-project-root PATH)))
-  (compile COMMAND))
+  (setq default-directory (if Path Path (v-project-root Path)))
+  (compile command))
 
 (defun v-project-build ()
   "Build project with v."
@@ -395,14 +396,14 @@ Optional argument PATH ."
 
 (defun v-folding-hide-element
   (&optional
-    RETRY)
+    retry)
   "Hide current element.
 Optional argument RETRY ."
   (interactive)
   (let* ((region (yafolding-get-element-region))
           (beg (car region))
           (end (cadr region)))
-    (if (and (eq RETRY nil)
+    (if (and (not retry)
           (= beg end))
       (progn (yafolding-go-parent-element)
         (v-folding-hide-element t))
@@ -430,21 +431,19 @@ Optional argument RETRY ."
     (if (file-exists-p packages-path)
       (progn
         (setq default-directory (v-project-root))
-        (let (result (shell-command-to-string ctags-params))
-          (if (not (eq "" result))
-            (message "ctags:%s" result)))
+        (message "ctags:%s" (shell-command-to-string ctags-params))
         (v-load-tags)))))
 
 (defun v-load-tags
   (&optional
-    BUILD)
+    build)
   "Visit tags table.
 Optional argument BUILD ."
   (interactive)
   (let* ((tags-file (concat (v-project-root) "TAGS")))
     (if (file-exists-p tags-file)
       (progn (visit-tags-table (concat (v-project-root) "TAGS")))
-      (if BUILD (v-build-tags)))))
+      (if build (v-build-tags)))))
 
 (defun v-format-buffer ()
   "Format the current buffer using the 'v fmt -w'."
@@ -467,8 +466,7 @@ Optional argument BUILD ."
   (if (fboundp 'prog-mode) 'prog-mode 'fundamental-mode))
 
 ;;;###autoload
-(define-derived-mode v-mode v-parent-mode
-  "V"
+(define-derived-mode v-mode v-parent-mode "V"
   "Major mode for editing V files."
   :syntax-table v-mode-syntax-table
   (setq bidi-paragraph-direction 'left-to-right)
@@ -478,7 +476,7 @@ Optional argument BUILD ."
   (setq-local comment-start "*/")
   (setq-local comment-start-skip "\\(//+\\|/\\*+\\)\\s *")
   (setq-local electric-indent-chars (append "{}():;," electric-indent-chars))
-  (setq-local indent-line-function 'js-indent-line)
+  (setq-local indent-line-function #'js-indent-line)
   ;;
   ;; (setq-local font-lock-defaults        ;
   ;; '(v-font-lock-keywords ;
@@ -534,7 +532,7 @@ Optional argument BUILD ."
        ("import" "[ \t]*import[ \t]+\\([a-zA-Z0-9_]+\\)" 1)))
   (imenu-add-to-menubar "Index")
   ;;
-  (add-hook 'after-save-hook 'v-after-save-hook nil t)
+  (add-hook 'after-save-hook #'v-after-save-hook nil t)
   (v-load-tags))
 
 ;;;###autoload
