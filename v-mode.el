@@ -4,7 +4,7 @@
 ;; Version: 0.0.1
 ;; URL: https://github.com/damon-kwok/v-mode
 ;; Keywords: languages programming
-;; Package-Requires: ((emacs "25.1") (dash "2.17.0") (hydra "0.15.0") (yasnippet "0.14.0"))
+;; Package-Requires: ((emacs "25.1") (dash "2.17.0") (hydra "0.15.0"))
 ;;
 ;; This file is not part of GNU Emacs.
 ;;
@@ -65,15 +65,8 @@
 (require 'hydra)
 (require 'imenu)
 (require 'easymenu)
-(require 'yasnippet)
 
 (defvar v-mode-hook nil)
-
-(defcustom v-indent-trigger-commands    ;
-  '(indent-for-tab-command yas-expand yas/expand)
-  "Commands that might trigger a `v-indent-line' call."
-  :type '(repeat symbol)
-  :group 'v)
 
 (defconst v-mode-syntax-table
   (let ((table (make-syntax-table)))
@@ -388,21 +381,6 @@ Optional argument PATH ."
   (interactive)
   (v-hydra-menu/body))
 
-(defun v-folding-hide-element
-  (&optional
-    retry)
-  "Hide current element.
-Optional argument RETRY ."
-  (interactive)
-  (let* ((region (yafolding-get-element-region))
-          (beg (car region))
-          (end (cadr region)))
-    (if (and (not retry)
-          (= beg end))
-      (progn (yafolding-go-parent-element)
-        (v-folding-hide-element t))
-      (yafolding-hide-region beg end))))
-
 (defun v-build-tags ()
   "Build tags for current project."
   (interactive)
@@ -456,11 +434,8 @@ Optional argument BUILD ."
       (message "Could not locate executable '%s'" "ctags")
       (v-build-tags))))
 
-(defalias 'v-parent-mode                ;
-  (if (fboundp 'prog-mode) 'prog-mode 'fundamental-mode))
-
 ;;;###autoload
-(define-derived-mode v-mode v-parent-mode "V"
+(define-derived-mode v-mode prog-mode "V"
   "Major mode for editing V files."
   :syntax-table v-mode-syntax-table
   (setq bidi-paragraph-direction 'left-to-right)
