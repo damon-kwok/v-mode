@@ -69,7 +69,8 @@
 
 (defvar v-mode-hook nil)
 
-(defcustom v-indent-trigger-commands    ;
+(defcustom v-indent-trigger-commands
+                                        ;
   '(indent-for-tab-command yas-expand yas/expand)
   "Commands that might trigger a `v-indent-line' call."
   :type '(repeat symbol)
@@ -110,7 +111,8 @@
 (defconst v-keywords '("if" "else" "for" "match")
   "V language keywords.")
 
-(defconst v-declaration-keywords        ;
+(defconst v-declaration-keywords
+                                        ;
   '("type" "interface" "struct" "enum" "fn")
   "V declaration keywords.")
 
@@ -150,15 +152,18 @@
 (defconst v-keywords-regexp (regexp-opt v-keywords 'words)
   "Regular expression for matching keywords.")
 
-(defconst v-declaration-keywords-regexp ;
+(defconst v-declaration-keywords-regexp
+                                        ;
   (regexp-opt v-declaration-keywords 'words)
   "Regular expression for matching declaration keywords.")
 
-(defconst v-preprocessor-keywords-regexp ;
+(defconst v-preprocessor-keywords-regexp
+                                        ;
   (regexp-opt v-preprocessor-keywords 'words)
   "Regular expression for matching preprocessor keywords.")
 
-(defconst v-careful-keywords-regexp     ;
+(defconst v-careful-keywords-regexp
+                                        ;
   (regexp-opt v-careful-keywords 'words)
   "Regular expression for matching careful keywords.")
 
@@ -169,7 +174,8 @@
   (regexp-opt v-constants 'words)
   "Regular expression for matching constants.")
 
-(defconst v-operator-functions-regexp   ;
+(defconst v-operator-functions-regexp
+                                        ;
   (regexp-opt v-operator-functions 'words)
   "Regular expression for matching operator functions.")
 
@@ -202,20 +208,23 @@
      ("\\($?[?^!&]+\\)" 1 'font-lock-warning-face)
 
      ;; delimiter: = : separate
-     ("[^+-/*//%~^!=<>]\\([=:]\\)[^+-/*//%~^!=<>]" 1 'font-lock-comment-delimiter-face)
+     ("[^+-/*//%~^!=<>]\\([=:]\\)[^+-/*//%~^!=<>]" 1
+       'font-lock-comment-delimiter-face)
 
      ;; delimiter: brackets
      ("\\(\\[\\|\\]\\|[(){}]\\)" 1 'font-lock-comment-delimiter-face)
 
      ;; numeric literals
      ;; ("[^A-Za-z_]\\([0-9][A-Za-z0-9_]*\\)" 1 'font-lock-constant-face)
-     ("[ \t/+-/*//=><([{,;&|%]\\([0-9][A-Za-z0-9_]*\\)" 1 'font-lock-constant-face)
+     ("[ \t/+-/*//=><([{,;&|%]\\([0-9][A-Za-z0-9_]*\\)" 1
+       'font-lock-constant-face)
 
      ;; operator methods
      (,v-operator-functions-regexp . font-lock-builtin-face)
 
      ;; method definitions
-     ("\\(?:fn\\)\s+\\($?[a-z_][A-Za-z0-9_]*\\)" 1 'font-lock-function-name-face)
+     ("\\(?:fn\\)\s+\\($?[a-z_][A-Za-z0-9_]*\\)" 1
+       'font-lock-function-name-face)
 
      ;; type
      ("\\([A-Z][A-Za-z0-9_]*\\)" 1 'font-lock-type-face)
@@ -227,7 +236,8 @@
      ("\\([a-z_]$?[a-z0-9_]?+\\)$?[ \t]?(+" 1 'font-lock-function-name-face)
 
      ;; parameter
-     ("\\(?:(\\|,\\)\\([a-z_][a-z0-9_']*\\)\\([^ \t\r\n,:)]*\\)" 1 'font-lock-variable-name-face)
+     ("\\(?:(\\|,\\)\\([a-z_][a-z0-9_']*\\)\\([^ \t\r\n,:)]*\\)" 1
+       'font-lock-variable-name-face)
      ("\\(?:(\\|,\\)[ \t]+\\([a-z_][a-z0-9_']*\\)\\([^ \t\r\n,:)]*\\)" 1
        'font-lock-variable-name-face)
 
@@ -314,7 +324,8 @@ Optional argument PATH ."
 
 (defun v-buffer-dirname ()
   "Return current buffer directory file name."
-  (directory-file-name (if buffer-file-name (file-name-directory buffer-file-name)
+  (directory-file-name (if buffer-file-name (file-name-directory
+                                              buffer-file-name)
                          default-directory)))
 
 (defun v-project-run ()
@@ -342,8 +353,10 @@ Optional argument PATH ."
      ("Community"                        ;
        ["News" (v-run-command "xdg-open https://twitter.com/v_language") t]
        ["Discord" (v-run-command "xdg-open https://discord.gg/vlang") t]
-       ["Open an issue" (v-run-command "xdg-open https://github.com/vlang/v/issues") t]
-       ["Tutorial" (v-run-command "xdg-open https://github.com/vlang/v/blob/master/doc/docs.md") t]
+       ["Open an issue" (v-run-command
+                          "xdg-open https://github.com/vlang/v/issues") t]
+       ["Tutorial" (v-run-command
+                     "xdg-open https://github.com/vlang/v/blob/master/doc/docs.md") t]
        ["Awesome-V" ("xdg-open https://github.com/vlang/awesome-v") t]
        ["Contribute" (v-run-command
                        "xdg-open https://github.com/vlang/v/blob/master/CONTRIBUTING.md") t]
@@ -375,11 +388,15 @@ Optional argument PATH ."
   ("u" v-project-update "v udate")
   ("1" (v-run-command "xdg-open https://twitter.com/v_language") "News")
   ("2" (v-run-command "xdg-open https://discord.gg/vlang") "Discord")
-  ("3" (v-run-command "xdg-open https://github.com/vlang/v/issues") "Open an issue")
-  ("4" (v-run-command "xdg-open https://github.com/vlang/v/blob/master/doc/docs.md") "Docs")
-  ("5" (v-run-command "xdg-open https://github.com/vlang/awesome-v") "Awesome-V")
+  ("3" (v-run-command "xdg-open https://github.com/vlang/v/issues")
+    "Open an issue")
+  ("4" (v-run-command
+         "xdg-open https://github.com/vlang/v/blob/master/doc/docs.md") "Docs")
+  ("5" (v-run-command "xdg-open https://github.com/vlang/awesome-v")
+    "Awesome-V")
   ("6" (v-run-command "xdg-open https://patreon.com/vlang") "Supporter")
-  ("0" (v-run-command "xdg-open https://github.com/vlang/v/blob/master/CONTRIBUTING.md")
+  ("0" (v-run-command
+         "xdg-open https://github.com/vlang/v/blob/master/CONTRIBUTING.md")
     "Contribute")
   ("q" nil "Quit"))
 
@@ -411,7 +428,9 @@ Optional argument RETRY ."
     (if tags-buffer (kill-buffer tags-buffer))
     (if tags-buffer2 (kill-buffer tags-buffer2)))
   (let* ((v-path (string-trim (shell-command-to-string "which v")))
-          (v-executable (string-trim (shell-command-to-string (concat "readlink -f " v-path))))
+          (v-executable (string-trim (shell-command-to-string (concat
+                                                                "readlink -f "
+                                                                v-path))))
           (packages-path (concat (file-name-directory v-executable) "vlib") )
           (ctags-params                 ;
             (concat  "ctags --languages=-v --langdef=v --langmap=v:.v "
@@ -456,11 +475,13 @@ Optional argument BUILD ."
       (message "Could not locate executable '%s'" "ctags")
       (v-build-tags))))
 
-(defalias 'v-parent-mode                ;
+(defalias 'v-parent-mode
+                                        ;
   (if (fboundp 'prog-mode) 'prog-mode 'fundamental-mode))
 
 ;;;###autoload
-(define-derived-mode v-mode v-parent-mode "V"
+(define-derived-mode v-mode v-parent-mode
+  "V"
   "Major mode for editing V files."
   :syntax-table v-mode-syntax-table
   (setq bidi-paragraph-direction 'left-to-right)
