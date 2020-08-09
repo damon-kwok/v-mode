@@ -407,11 +407,10 @@ Optional argument PATH ."
               "--regex-v=/[ \\t]*enum[ \\t]+([a-zA-Z0-9_]+)/\\1/e,enum/ "
               "--regex-v=/[ \\t]*module[ \\t]+([a-zA-Z0-9_]+)/\\1/m,module/ " ;
               "-e -R . " packages-path)))
-    (if (file-exists-p packages-path)
-      (progn
-        (setq default-directory (v-project-root))
-        (message "ctags:%s" (shell-command-to-string ctags-params))
-        (v-load-tags)))))
+    (when (file-exists-p packages-path)
+      (setq default-directory (v-project-root))
+      (message "ctags:%s" (shell-command-to-string ctags-params))
+      (v-load-tags))))
 
 (defun v-load-tags
   (&optional
