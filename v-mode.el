@@ -286,13 +286,13 @@ Optional argument PATH ."
     (v-run-command "v .")))
 
 (defun v-project-init ()
-  "Run corral `init' command."
+  "Run v `init' command."
   (interactive)
   (unless (v-project-file-exists-p "v.mod")
     (v-run-command "v init")))
 
 (defun v-project-update ()
-  "Run corral `update' command."
+  "Run v `update' command."
   (interactive)
   (if (v-project-file-exists-p "v.mod")
     (v-run-command "v update")))
