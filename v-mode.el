@@ -315,10 +315,10 @@ Optional argument PATH ."
   (let* ((bin1 (concat (v-project-root) "bin/" (v-project-name)))
           (bin2 (concat (v-project-root) "/" (v-project-name)))
           (bin3 (concat (v-buffer-dirname) "/" (v-project-name))))
-    (cond 
+    (cond
       ((file-exists-p bin1) (v-run-command bin1))
       ((file-exists-p bin2) (v-run-command bin2))
-      ((file-exists-p bin2) (v-run-command bin2)))))
+      ((file-exists-p bin2) (v-run-command bin3)))))
 
 (easy-menu-define v-mode-menu v-mode-map ;
   "Menu for V mode."                     ;
