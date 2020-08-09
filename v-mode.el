@@ -445,7 +445,7 @@ Optional argument BUILD ."
   "V"
   "Major mode for editing V files."
   :syntax-table v-mode-syntax-table
-  (setq bidi-paragraph-direction 'left-to-right)
+  ;; (setq-local bidi-paragraph-direction 'left-to-right)
   (setq-local require-final-newline mode-require-final-newline)
   (setq-local parse-sexp-ignore-comments t)
   (setq-local comment-start "/*")
