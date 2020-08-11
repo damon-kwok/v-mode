@@ -449,8 +449,14 @@ Optional argument BUILD ."
   (setq-local comment-start "/*")
   (setq-local comment-end "*/")
   (setq-local comment-start-skip "\\(//+\\|/\\*+\\)\\s *")
+    ;;
+  (setq-local indent-tabs-mode nil)
+  (setq-local tab-width 4)
+  (setq-local buffer-file-coding-system 'utf-8-unix)
+  ;;
   (setq-local electric-indent-chars (append "{}():;," electric-indent-chars))
   (setq-local indent-line-function #'js-indent-line)
+  (setq-local js-indent-level tab-width)
   ;;
   ;; (setq-local font-lock-defaults        ;
   ;; '(v-font-lock-keywords ;
@@ -460,10 +466,6 @@ Optional argument BUILD ."
   (font-lock-ensure)
   ;;
   ;; (setq-local syntax-propertize-function v-syntax-propertize-function)
-  ;;
-  (setq-local indent-tabs-mode nil)
-  (setq-local tab-width 4)
-  (setq-local buffer-file-coding-system 'utf-8-unix)
   ;;
   (setq-local imenu-generic-expression ;;
     '(("TODO" ".*TODO:[ \t]*\\(.*\\)$" 1)
