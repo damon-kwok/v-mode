@@ -275,8 +275,10 @@ Optional argument PATH ."
 (defun v-run-command (command &optional Path)
   "Return `COMMAND' in the root of the V project.
 Optional argument PATH ."
-  (setq default-directory (if Path Path (v-project-root Path)))
-  (compile command))
+  (let ((oldir default-directory))
+    (setq default-directory (if Path Path (v-project-root Path)))
+    (compile command)
+    (setq default-directory oldir)))
 
 (defun v-project-build ()
   "Build project with v."
@@ -315,10 +317,12 @@ Optional argument PATH ."
   (let* ((bin1 (concat (v-project-root) "bin/" (v-project-name)))
           (bin2 (concat (v-project-root) "/" (v-project-name)))
           (bin3 (concat (v-buffer-dirname) "/" (v-project-name))))
-    (cond
-      ((file-exists-p bin1) (v-run-command bin1))
-      ((file-exists-p bin2) (v-run-command bin2))
-      ((file-exists-p bin2) (v-run-command bin3)))))
+    (cond ((file-exists-p bin1)
+            (v-run-command bin1))
+      ((file-exists-p bin2)
+        (v-run-command bin2))
+      ((file-exists-p bin2)
+        (v-run-command bin3)))))
 
 (easy-menu-define v-mode-menu v-mode-map ;
   "Menu for V mode."                     ;
@@ -392,10 +396,11 @@ Optional argument PATH ."
     (if tags-buffer (kill-buffer tags-buffer))
     (if tags-buffer2 (kill-buffer tags-buffer2)))
   (let* ((v-path (string-trim (shell-command-to-string "which v")))
-          (v-executable (string-trim (shell-command-to-string (concat
-                                                                "readlink -f "
-                                                                v-path))))
-          (packages-path (concat (file-name-directory v-executable) "vlib") )
+          (v-executable                 ;
+            (string-trim (shell-command-to-string (concat "readlink -f "
+                                                    v-path))))
+          (packages-path                ;
+            (concat (file-name-directory v-executable) "vlib"))
           (ctags-params                 ;
             (concat  "ctags --languages=-v --langdef=v --langmap=v:.v "
               "--regex-v=/[ \\t]*fn[ \\t]+(.*)[ \\t]+(.*)/\\2/f,function/ "
@@ -406,9 +411,11 @@ Optional argument PATH ."
               "--regex-v=/[ \\t]*module[ \\t]+([a-zA-Z0-9_]+)/\\1/m,module/ " ;
               "-e -R . " packages-path)))
     (when (file-exists-p packages-path)
-      (setq default-directory (v-project-root))
-      (message "ctags:%s" (shell-command-to-string ctags-params))
-      (v-load-tags))))
+      (let ((oldir default-directory))
+        (setq default-directory (v-project-root))
+        (message "ctags:%s" (shell-command-to-string ctags-params))
+        (v-load-tags)
+        (setq default-directory oldir)))))
 
 (defun v-load-tags
   (&optional
@@ -443,13 +450,13 @@ Optional argument BUILD ."
   "V"
   "Major mode for editing V files."
   :syntax-table v-mode-syntax-table
-  ;; (setq-local bidi-paragraph-direction 'left-to-right)
+  ;;
   (setq-local require-final-newline mode-require-final-newline)
   (setq-local parse-sexp-ignore-comments t)
   (setq-local comment-start "/*")
   (setq-local comment-end "*/")
   (setq-local comment-start-skip "\\(//+\\|/\\*+\\)\\s *")
-    ;;
+  ;;
   (setq-local indent-tabs-mode nil)
   (setq-local tab-width 4)
   (setq-local buffer-file-coding-system 'utf-8-unix)
@@ -458,14 +465,8 @@ Optional argument BUILD ."
   (setq-local indent-line-function #'js-indent-line)
   (setq-local js-indent-level tab-width)
   ;;
-  ;; (setq-local font-lock-defaults        ;
-  ;; '(v-font-lock-keywords ;
-  ;; nil nil nil nil         ;
-  ;; (font-lock-syntactic-face-function . v-mode-syntactic-face-function)))
   (setq-local font-lock-defaults '(v-font-lock-keywords))
-  (font-lock-ensure)
-  ;;
-  ;; (setq-local syntax-propertize-function v-syntax-propertize-function)
+  (font-lock-flush)
   ;;
   (setq-local imenu-generic-expression ;;
     '(("TODO" ".*TODO:[ \t]*\\(.*\\)$" 1)
