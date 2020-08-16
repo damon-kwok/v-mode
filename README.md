@@ -1,6 +1,6 @@
 [![GitHub license](https://img.shields.io/github/license/damon-kwok/v-mode?logo=gnu&.svg)](https://github.com/damon-kwok/v-mode/blob/master/COPYING)
 [![Sponsor](https://img.shields.io/badge/Support%20Me-%F0%9F%92%97-ff69b4.svg)](https://www.patreon.com/DamonKwok)
-<!-- [![MELPA](http://melpa.org/packages/v-mode-badge.svg)](http://melpa.org/#/v-mode) -->
+[![MELPA](http://melpa.org/packages/v-mode-badge.svg)](http://melpa.org/#/v-mode)
 <!-- [![MELPA Stable](http://stable.melpa.org/packages/v-mode-badge.svg)](http://stable.melpa.org/#/v-mode) -->
 
 # V Mode
@@ -13,8 +13,8 @@ An Emacs major mode for the [V](https://vlang.io/) programming language.
 
 ## Features
 
-- [X] Syntax highlighting (font-lock)
-- [X] Indentation
+- [x] Syntax highlighting (font-lock)
+- [x] Indentation
 - [x] Workspace support
 - [x] Auto format on save
 - [x] Compilation integration
@@ -31,12 +31,12 @@ An Emacs major mode for the [V](https://vlang.io/) programming language.
 
 ## Installation
 
-### Using MELPA ([COMING SOON](https://github.com/melpa/melpa/pull/7031))
-~~This package can be obtain from
+### Using MELPA
+This package can be obtain from
 [MELPA](http://melpa.org/#/v-mode) or
 [MELPA Stable](http://stable.melpa.org/#/v-mode). The `master`
 branch is continuously deployed to `MELPA`, and released versions are
-deployed to `MELPA Stable`.~~
+deployed to `MELPA Stable`.
 
 <kbd>M-x package-install [RET] v-mode [RET]</kbd>
 
