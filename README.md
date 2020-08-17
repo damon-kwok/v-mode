@@ -48,8 +48,6 @@ it's too simple to need any).
 (define-key v-mode-map (kbd "M-z") 'v-menu)
 (define-key v-mode-map (kbd "<f6>")  'v-menu)
 (define-key v-mode-map (kbd "C-c C-f") 'v-format-buffer)
-
-(with-eval-after-load 'company (company-ctags-auto-setup))
 ```
 
 ### Using [use-package](https://github.com/jwiegley/use-package) and [straight.el](https://github.com/raxod502/straight.el)
@@ -67,6 +65,4 @@ it's too simple to need any).
   ("<f6>" . v-menu)
   ("C-c C-f" . v-format-buffer)
   :mode ("\\.v?v\\.vsh\\'" . 'v-mode))
-
-(with-eval-after-load 'company (company-ctags-auto-setup))
 ```
