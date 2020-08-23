@@ -237,8 +237,9 @@
 
 (defun v-project-root-p (path)
   "Return t if directory `PATH' is the root of the V project."
-  (let* ((files '("v.mod" "make.bat" "Makefile" ;
-                   "Dockerfile" ".editorconfig" ".gitignore"))
+  (let* ((files '("v.mod" "make.bat" "Makefile"              ;
+                   "Dockerfile" ".editorconfig" ".gitignore" ;
+                   ".git" ".svn" ".hg" ".bzr"))
           (foundp nil))
     (while (and (> (length files) 0)
              (not foundp))
@@ -259,6 +260,7 @@ Optional argument PATH ."
           (parent (file-name-directory (directory-file-name curdir))))
     (if (or (not parent)
           (string= parent curdir)
+          (string= parent (file-name-as-directory (getenv "HOME")))
           (string= parent "/")
           (v-project-root-p curdir))    ;
       curdir                            ;
@@ -272,11 +274,11 @@ Optional argument PATH ."
   "Return t if file `FILENAME' exists."
   (file-exists-p (concat (v-project-root) filename)))
 
-(defun v-run-command (command &optional Path)
+(defun v-run-command (command &optional path)
   "Return `COMMAND' in the root of the V project.
 Optional argument PATH ."
   (let ((oldir default-directory))
-    (setq default-directory (if Path Path (v-project-root Path)))
+    (setq default-directory (if path path (v-project-root path)))
     (compile command)
     (setq default-directory oldir)))
 
