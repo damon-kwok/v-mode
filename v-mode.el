@@ -405,12 +405,12 @@ Optional argument PATH ."
             (concat (file-name-directory v-executable) "vlib"))
           (ctags-params                 ;
             (concat  "ctags --languages=-v --langdef=v --langmap=v:.v "
-              "--regex-v=/[ \\t]*fn[ \\t]+(.*)[ \\t]+(.*)/\\2/f,function/ "
-              "--regex-v=/[ \\t]*struct[ \\t]+([a-zA-Z0-9_]+)/\\1/s,struct/ "
-              "--regex-v=/[ \\t]*interface[ \\t]+([a-zA-Z0-9_]+)/\\1/i,interface/ "
-              "--regex-v=/[ \\t]*type[ \\t]+([a-zA-Z0-9_]+)/\\1/t,type/ "
-              "--regex-v=/[ \\t]*enum[ \\t]+([a-zA-Z0-9_]+)/\\1/e,enum/ "
-              "--regex-v=/[ \\t]*module[ \\t]+([a-zA-Z0-9_]+)/\\1/m,module/ " ;
+              "--regex-v='/[ \\t]*fn[ \\t]+(.*)[ \\t]+(.*)/\\2/f,function/' "
+              "--regex-v='/[ \\t]*struct[ \\t]+([a-zA-Z0-9_]+)/\\1/s,struct/' "
+              "--regex-v='/[ \\t]*interface[ \\t]+([a-zA-Z0-9_]+)/\\1/i,interface/' "
+              "--regex-v='/[ \\t]*type[ \\t]+([a-zA-Z0-9_]+)/\\1/t,type/' "
+              "--regex-v='/[ \\t]*enum[ \\t]+([a-zA-Z0-9_]+)/\\1/e,enum/' "
+              "--regex-v='/[ \\t]*module[ \\t]+([a-zA-Z0-9_]+)/\\1/m,module/' " ;
               "-e -R . " packages-path)))
     (when (file-exists-p packages-path)
       (let ((oldir default-directory))
