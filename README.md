@@ -67,3 +67,13 @@ it's too simple to need any).
   ("C-c C-f" . v-format-buffer)
   :mode ("\\.v?v\\.vsh\\'" . 'v-mode))
 ```
+
+### Manually
+Either copy `v-mode.el` to some directory in your [`load-path`](https://www.emacswiki.org/emacs/LoadPath), or [add this directory to it](https://www.emacswiki.org/emacs/LoadPath#h5o-1), then put the following in your [`.emacs`](https://www.emacswiki.org/emacs/InitFile#init_file):
+```elisp
+;;; V.
+(autoload 'v-mode "v-mode" "" t)
+(setq auto-mode-alist
+      (cons '("\\(\\.v\\|\\.vv\\|\\.vsh\\)$" . v-mode) auto-mode-alist))
+```
+`v-mode` will set the buffer encoding to `utf-8` by itself.

@@ -46,14 +46,11 @@
 ;;
 ;;; Code:
 
-(require 'cl-lib)
-(require 'subr-x)
-(require 'js)
-(require 'dash)
-(require 'xref)
-(require 'hydra)
-(require 'imenu)
-(require 'easymenu)
+;; Load these packages if available, but do not fail otherwise:
+(require 'dash  nil 'noerror)
+(require 'hydra nil 'noerror)
+
+(require 'js) ;; For js-indent-line.
 
 (defvar v-mode-hook nil)
 
@@ -356,39 +353,43 @@ Optional argument PATH ."
     \\_/
 ")
 
-(defhydra v-hydra-menu
-  (:color blue
-    :hint none)
-  "
+(if (fboundp 'defhydra)
+    (progn
+      (defhydra v-hydra-menu
+        (:color blue
+                :hint none)
+        "
 %s(v-banner-default)
   Project     |  _i_: Init      _u_: Update     _o_: v.mod
               |  _b_: Build     _r_: Run
   Community   |  _1_: News      _2_: Discord    _3_: OpenIssue
               |  _4_: Tutorial  _5_: Awesome-V  _6_: Sponsors  _0_: Contribute
   _q_: Quit"                            ;
-  ("b" v-project-build "Build")
-  ("r" v-project-run "Run")
-  ("o" v-project-open "Open v.mod")
-  ("i" v-project-init "v init")
-  ("u" v-project-update "v udate")
-  ("1" (v-run-command "xdg-open https://twitter.com/v_language") "News")
-  ("2" (v-run-command "xdg-open https://discord.gg/vlang") "Discord")
-  ("3" (v-run-command "xdg-open https://github.com/vlang/v/issues")
-    "Open an issue")
-  ("4" (v-run-command
-         "xdg-open https://github.com/vlang/v/blob/master/doc/docs.md") "Docs")
-  ("5" (v-run-command "xdg-open https://github.com/vlang/awesome-v")
-    "Awesome-V")
-  ("6" (v-run-command "xdg-open https://patreon.com/vlang") "Supporter")
-  ("0" (v-run-command
-         "xdg-open https://github.com/vlang/v/blob/master/CONTRIBUTING.md")
-    "Contribute")
-  ("q" nil "Quit"))
+        ("b" v-project-build "Build")
+        ("r" v-project-run "Run")
+        ("o" v-project-open "Open v.mod")
+        ("i" v-project-init "v init")
+        ("u" v-project-update "v udate")
+        ("1" (v-run-command "xdg-open https://twitter.com/v_language") "News")
+        ("2" (v-run-command "xdg-open https://discord.gg/vlang") "Discord")
+        ("3" (v-run-command "xdg-open https://github.com/vlang/v/issues")
+         "Open an issue")
+        ("4" (v-run-command
+              "xdg-open https://github.com/vlang/v/blob/master/doc/docs.md") "Docs")
+        ("5" (v-run-command "xdg-open https://github.com/vlang/awesome-v")
+         "Awesome-V")
+        ("6" (v-run-command "xdg-open https://patreon.com/vlang") "Supporter")
+        ("0" (v-run-command
+              "xdg-open https://github.com/vlang/v/blob/master/CONTRIBUTING.md")
+         "Contribute")
+        ("q" nil "Quit"))
 
-(defun v-menu ()
-  "Open v hydra menu."
-  (interactive)
-  (v-hydra-menu/body))
+      (defun v-menu ()
+        "Open v hydra menu."
+        (interactive)
+        (v-hydra-menu/body))
+      )
+  )
 
 (defun v-build-tags ()
   "Build tags for current project."
