@@ -92,15 +92,25 @@
 (defconst v-keywords '("if" "else" "for" "match")
   "V language keywords.")
 
-(defconst v-declaration-keywords
+;;;###autoload
+(defgroup v-mode nil
+  "Major mode for editing V code."
+  :prefix "v-"
+  :group 'languages)
+
+(defcustom v-declaration-keywords
                                         ;
   '("type" "interface" "struct" "enum" "fn")
-  "V declaration keywords.")
+  "V declaration keywords."
+  :type '(repeat string)
+  :group 'v-mode)
 
-(defconst v-preprocessor-keywords '("module" "pub" "const")
-  "V preprocessor keywords.")
+(defcustom v-preprocessor-keywords '("module" "pub" "const")
+  "V preprocessor keywords."
+  :type '(repeat string)
+  :group 'v-mode)
 
-(defconst v-careful-keywords
+(defcustom v-careful-keywords
   '("import"                            ;
      "break" "continue" "return" "goto" ;
      "defer" "panic" "error"            ;
@@ -108,9 +118,11 @@
      "go" "inline" "live"               ;
      "as" "assert"  "unsafe" "mut"      ;
      "__global" "C")
-  "V language careful keywords.")
+  "V language careful keywords."
+  :type '(repeat string)
+  :group 'v-mode)
 
-(defconst v-builtin-keywords
+(defcustom v-builtin-keywords
   '("string" "bool"                         ;
      "i8" "i16" "int" "i64" "i128"          ;
      "byte" "u16" "u32" "u64" "u128"        ;
@@ -119,14 +131,20 @@
      "byteptr" "voidptr" "charptr" "size_t" ;
      "any" "any_int" "any_float"            ;
      "it")
-  "V language keywords.")
+  "V language keywords."
+  :type '(repeat string)
+  :group 'v-mode)
 
-(defconst v-constants                   ;
+(defcustom v-constants                   ;
   '("false" "true" "none")
-  "Common constants.")
+  "Common constants."
+  :type '(repeat string)
+  :group 'v-mode)
 
-(defconst v-operator-functions '()
-  "V language operators functions.")
+(defcustom v-operator-functions '()
+  "V language operators functions."
+  :type '(repeat string)
+  :group 'v-mode)
 
 ;; create the regex string for each class of keywords
 
@@ -160,7 +178,7 @@
   (regexp-opt v-operator-functions 'words)
   "Regular expression for matching operator functions.")
 
-(defconst v-font-lock-keywords
+(defvar v-font-lock-keywords
   `(
      ;; builtin
      (,v-builtin-keywords-regexp . font-lock-builtin-face)
