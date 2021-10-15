@@ -422,7 +422,7 @@ Optional argument PATH ."
           (packages-path                ;
             (concat (file-name-directory v-executable) "vlib"))
           (ctags-params                 ;
-            (concat  "ctags --languages=-v --langdef=v --langmap=v:.v "
+            (concat  "ctags --langdef=v --langmap=v:.v "
               "--regex-v='/[ \\t]*fn[ \\t]+(.*)[ \\t]+(.*)/\\2/f,function/' "
               "--regex-v='/[ \\t]*struct[ \\t]+([a-zA-Z0-9_]+)/\\1/s,struct/' "
               "--regex-v='/[ \\t]*interface[ \\t]+([a-zA-Z0-9_]+)/\\1/i,interface/' "
