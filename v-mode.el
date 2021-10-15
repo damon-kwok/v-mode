@@ -82,9 +82,20 @@
     ;; Don't treat underscores as whitespace
     (modify-syntax-entry ?_ "w" table) table))
 
+(defun v-comment-or-uncomment-region-or-line ()
+  "Comments or uncomments the region or the current line if there's no active region."
+  (interactive)
+  (let (beg end)
+    (if (region-active-p)
+      (setq beg (region-beginning) end (region-end))
+      (setq beg (line-beginning-position) end (line-end-position)))
+    (comment-or-uncomment-region beg end)
+    (next-line)))
+
 (defvar v-mode-map
   (let ((map (make-keymap)))
     (define-key map "\C-j" 'newline-and-indent)
+    (define-key map "\M-;" 'v-comment-or-uncomment-region-or-line)
     ;; (define-key map (kbd "<C-return>") 'yafolding-toggle-element) ;
     map)
   "Keymap for V major mode.")
@@ -135,7 +146,7 @@
   :type '(repeat string)
   :group 'v-mode)
 
-(defcustom v-constants                   ;
+(defcustom v-constants                  ;
   '("false" "true" "none")
   "Common constants."
   :type '(repeat string)
@@ -428,7 +439,8 @@ Optional argument PATH ."
               "--regex-v='/[ \\t]*interface[ \\t]+([a-zA-Z0-9_]+)/\\1/i,interface/' "
               "--regex-v='/[ \\t]*type[ \\t]+([a-zA-Z0-9_]+)/\\1/t,type/' "
               "--regex-v='/[ \\t]*enum[ \\t]+([a-zA-Z0-9_]+)/\\1/e,enum/' "
-              "--regex-v='/[ \\t]*module[ \\t]+([a-zA-Z0-9_]+)/\\1/m,module/' " ;
+              "--regex-v='/[ \\t]*module[ \\t]+([a-zA-Z0-9_]+)/\\1/m,module/' "
+                                        ;
               "-e -R . " packages-path)))
     (when (file-exists-p packages-path)
       (let ((oldir default-directory))
