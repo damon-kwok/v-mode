@@ -514,7 +514,8 @@ Optional argument BUILD ."
   (v-load-tags))
 
 ;;;###autoload
-(add-to-list 'auto-mode-alist '("\\.v?v\\.vsh\\'" . v-mode))
+(setq auto-mode-alist
+      (cons '("\\(\\.v?v\\|\\.vsh\\)$" . v-mode) auto-mode-alist))
 
 ;;
 (provide 'v-mode)

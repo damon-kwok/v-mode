@@ -65,5 +65,5 @@ it's too simple to need any).
   ("M-z" . v-menu)
   ("<f6>" . v-menu)
   ("C-c C-f" . v-format-buffer)
-  :mode ("\\.v?v\\.vsh\\'" . 'v-mode))
+  :mode ("\\(\\.v?v\\|\\.vsh\\)$" . 'v-mode))
 ```
