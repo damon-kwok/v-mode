@@ -133,6 +133,14 @@
   :type '(repeat string)
   :group 'v-mode)
 
+(defface v-mode-careful-keywords-face
+  '((((background light)) :inherit font-lock-keyword-face :weight thin :slant italic :background "#d8d8d8")
+    (((background dark)) :inherit font-lock-keyword-face :weight thin :slant italic :background "#404040"))
+  "Face `v-mode' uses to highlight keywords that need careful use."
+  :tag "V Careful Keywords"
+  :group 'v-mode)
+(defvar v-mode-careful-keywords-face 'v-mode-careful-keywords-face)
+
 (defcustom v-builtin-keywords
   '("string" "bool"                         ;
      "i8" "i16" "int" "i64" "i128"          ;
@@ -194,8 +202,8 @@
      ;; builtin
      (,v-builtin-keywords-regexp . font-lock-builtin-face)
 
-     ;; careful
-     (,v-careful-keywords-regexp . font-lock-warning-face)
+     ;; ;; careful
+     (,v-careful-keywords-regexp . v-mode-careful-keywords-face)
 
      ;; @ # $
      ;; ("#\\(?:include\\|flag\\)" . 'font-lock-builtin-face)
