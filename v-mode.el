@@ -487,7 +487,7 @@ Optional argument BUILD ."
   ;;
   (setq-local require-final-newline mode-require-final-newline)
   (setq-local parse-sexp-ignore-comments t)
-  (setq-local comment-start "//")
+  (setq-local comment-start "// ")
   (setq-local comment-end "")
   (setq-local comment-multi-line t)
   (setq-local comment-start-skip "\\(//+\\|/\\*+\\)\\s *")
