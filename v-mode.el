@@ -69,10 +69,12 @@
     (modify-syntax-entry ?/ ". 124" table)
 
     ;; /* */ comments, which can be nested
-    (modify-syntax-entry ?* ". 23bn" table)
-
-    ;; \n is a comment ender
-    (modify-syntax-entry ?\n ">" table)
+    ;; (modify-syntax-entry ?* ". 23bn" table)
+    ;; (modify-syntax-entry ?\n ">" table)
+       
+    ;; uses // for comments
+    (modify-syntax-entry ?/  ". 12" table)
+    (modify-syntax-entry ?\n ">"    table)
 
     ;; string
     (modify-syntax-entry ?\` "\"" table)
@@ -493,8 +495,9 @@ Optional argument BUILD ."
   ;;
   (setq-local require-final-newline mode-require-final-newline)
   (setq-local parse-sexp-ignore-comments t)
-  (setq-local comment-start "/*")
-  (setq-local comment-end "*/")
+  (setq-local comment-start "// ")
+  (setq-local comment-end "")
+  (setq-local comment-multi-line t)
   (setq-local comment-start-skip "\\(//+\\|/\\*+\\)\\s *")
   ;;
   (setq-local indent-tabs-mode nil)
